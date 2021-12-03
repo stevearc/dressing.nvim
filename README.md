@@ -107,8 +107,10 @@ require('dressing').setup({
 
     -- Options for fzf selector
     fzf = {
-      width = 0.5,
-      height = 0.4,
+      window = {
+        width = 0.5,
+        height = 0.4,
+      },
     },
 
     -- Options for nui Menu
