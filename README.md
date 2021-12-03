@@ -17,6 +17,26 @@ Neovim 0.5+
 
 On versions prior to 0.6, this plugin will act as a polyfill for `vim.ui`
 
+## Screenshots
+
+`vim.input` replacement (handling a LSP rename)
+![Screenshot from 2021-12-02 19-43-00](https://user-images.githubusercontent.com/506791/144541672-17db1045-6ab6-4422-a09e-b2257965817e.png)
+
+`vim.select` (telescope)
+![Screenshot from 2021-12-02 19-46-01](https://user-images.githubusercontent.com/506791/144541916-4fa60c50-cadc-4f0f-b3c1-6307310e6e99.png)
+
+`vim.select` (fzf)
+![Screenshot from 2021-12-02 19-46-54](https://user-images.githubusercontent.com/506791/144541986-6081b4f8-b3b2-418d-9265-b9dabec2c4c4.png)
+
+`vim.select` (nui)
+![Screenshot from 2021-12-02 19-47-56](https://user-images.githubusercontent.com/506791/144542071-1aa66f81-b07c-492e-9884-fdafed1006df.png)
+
+
+`vim.select` (built-in)
+![Screenshot from 2021-12-02 19-50-50](https://user-images.githubusercontent.com/506791/144542327-c7420501-c75d-40de-9fc8-70204ed16589.png)
+
+
+
 ## Installation
 dressing.nvim supports all the usual plugin managers
 
