@@ -154,6 +154,9 @@ require('dressing').setup({
       col = 0,
       border = "rounded",
 
+      -- Window options
+      winblend = 10,
+
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
       width = nil,
       max_width = 0.8,
