@@ -26,14 +26,4 @@ return function(items, opts, on_choice)
 
   local backend, name = get_backend(config)
   backend.select(config[name], items, opts, on_choice)
-
-  -- for i, item in pairs(items) do
-  --   table.insert(choices, string.format("%d: %s", i, format_item(item)))
-  -- end
-  -- local choice = vim.fn.inputlist(choices)
-  -- if choice < 1 or choice > #items then
-  --   on_choice(nil, nil)
-  -- else
-  --   on_choice(items[choice], choice)
-  -- end
 end
