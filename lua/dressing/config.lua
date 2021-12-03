@@ -23,7 +23,10 @@ local default_config = {
     backend = { "telescope", "fzf", "builtin", "nui" },
 
     -- Options for telescope selector
-    telescope = {},
+    telescope = {
+      -- can be 'dropdown', 'cursor', or 'ivy'
+      theme = "dropdown",
+    },
 
     -- Options for fzf selector
     fzf = {

@@ -21,7 +21,7 @@ M.select = function(config, items, opts, on_choice)
     }
   end
 
-  local picker_opts = themes.get_dropdown({
+  local picker_opts = themes[string.format("get_%s", config.theme)]({
     previewer = false,
   })
   pickers.new(picker_opts, {
