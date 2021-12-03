@@ -80,7 +80,9 @@ def main() -> None:
             get_config_lines[i] = "```lua\n"
             break
     get_config_lines.append("```\n")
-    replace_section(README, r"^## Custom config", r"^#", indent(get_config_lines, -4))
+    replace_section(
+        README, r"^## Advanced configuration", r"^#", indent(get_config_lines, -4)
+    )
 
 
 if __name__ == "__main__":

@@ -11,6 +11,13 @@ respects will be respected, and we will not accept any custom parameters or
 options in the functions. Customization will be done entirely using a separate
 [configuration](#configuration) method.
 
+* [Requirements](#requirements)
+* [Screenshots](#screenshots)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Advanced configuration](#advanced-configuration)
+* [Similar projects](#similar-projects)
+
 ## Requirements
 
 Neovim 0.5+
@@ -172,7 +179,7 @@ require('dressing').setup({
 })
 ```
 
-## Custom config per usage
+## Advanced configuration
 For each of the `input` and `select` configs, there is an option
 `get_config`. This can be a function that accepts the `opts` parameter that
 is passed in to `vim.select` or `vim.input`. It must return either `nil` (to
