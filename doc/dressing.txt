@@ -1,0 +1,102 @@
+*dressing.txt*
+*Dressing* *dressing* *dressing.nvim*
+===============================================================================
+CONFIGURATION                                            *dressing-configuration*
+
+Configure dressing.nvim by calling the setup() function.
+>
+    require('dressing').setup({
+      input = {
+        -- Default prompt string
+        default_prompt = "➤ ",
+    
+        -- These are passed to nvim_open_win
+        anchor = "SW",
+        relative = "cursor",
+        row = 0,
+        col = 0,
+        border = "rounded",
+    
+        -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+        prefer_width = 40,
+        max_width = nil,
+        min_width = 20,
+    
+        -- see :help dressing_get_config
+        get_config = nil,
+      },
+      select = {
+        -- Priority list of preferred vim.select implementations
+        backend = { "telescope", "fzf", "builtin", "nui" },
+    
+        -- Options for telescope selector
+        telescope = {},
+    
+        -- Options for fzf selector
+        fzf = {
+          width = 0.5,
+          height = 0.4,
+        },
+    
+        -- Options for nui Menu
+        nui = {
+          position = "50%",
+          size = nil,
+          relative = "editor",
+          border = {
+            style = "rounded",
+          },
+          max_width = 80,
+          max_height = 40,
+        },
+    
+        -- Options for built-in selector
+        builtin = {
+          -- These are passed to nvim_open_win
+          anchor = "NW",
+          relative = "cursor",
+          row = 0,
+          col = 0,
+          border = "rounded",
+    
+          -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+          width = nil,
+          max_width = 0.8,
+          min_width = 40,
+          height = nil,
+          max_height = 0.9,
+          min_height = 10,
+        },
+    
+        -- see :help dressing_get_config
+        get_config = nil,
+      },
+    })
+
+dressing.get_config()                                     *dressing_get_config()*
+    For each of the `input` and `select` configs, there is an option
+    `get_config`. This can be a function that accepts the `opts` parameter that
+    is passed in to `vim.select` or `vim.input`. It must return either `nil` (to
+    no-op) or config values to use in place of the global config values for that
+    module.
+
+    For example, if you want to use a specific configuration for code actions:
+>
+    require('dressing').setup({
+      select = {
+        get_config = function(opts)
+          if opts.kind == 'codeaction' then
+            return {
+              backend = 'nui',
+              nui = {
+                relative = 'cursor',
+                max_width = 40,
+              }
+            }
+          end
+        end
+      }
+    })
+
+===============================================================================
+vim:ft=help:et:ts=2:sw=2:sts=2:norl
