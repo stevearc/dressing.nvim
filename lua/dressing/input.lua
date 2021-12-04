@@ -15,6 +15,9 @@ return function(opts, on_confirm)
   })
 
   opts = opts or {}
+  if type(opts) ~= "table" then
+    opts = { prompt = tostring(opts) }
+  end
   local config = global_config.get_mod_config("input", opts)
 
   local bufnr = vim.api.nvim_create_buf(false, true)
