@@ -5,7 +5,7 @@ M.is_supported = function()
   return true
 end
 
-local _callback = function() end
+local _callback = function(item, idx) end
 local _items = {}
 local function clear_callback()
   _callback = function() end
@@ -13,10 +13,7 @@ local function clear_callback()
 end
 
 M.select = function(config, items, opts, on_choice)
-  _callback = function(item, idx)
-    clear_callback()
-    on_choice(item, idx)
-  end
+  _callback = on_choice
   _items = items
   local bufnr = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
@@ -56,20 +53,25 @@ M.select = function(config, items, opts, on_choice)
   map("<C-c>", [[<cmd>lua require('dressing.select.builtin').cancel()<CR>]])
   map("<Esc>", [[<cmd>lua require('dressing.select.builtin').cancel()<CR>]])
   vim.cmd([[
-      autocmd BufLeave <buffer> lua require('dressing.select.builtin').cancel()
+      autocmd BufLeave <buffer> ++nested ++once lua require('dressing.select.builtin').cancel()
   ]])
 end
 
 M.choose = function()
   local cursor = vim.api.nvim_win_get_cursor(0)
   local idx = cursor[1]
-  _callback(_items[idx], idx)
+  local item = _items[idx]
+  local callback = _callback
+  clear_callback()
   vim.api.nvim_win_close(0, true)
+  callback(item, idx)
 end
 
 M.cancel = function()
+  local callback = _callback
+  clear_callback()
   vim.api.nvim_win_close(0, true)
-  _callback(nil, nil)
+  callback(nil, nil)
 end
 
 return M
