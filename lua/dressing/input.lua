@@ -87,11 +87,11 @@ return function(opts, on_confirm)
     ]])
   end
   vim.cmd([[
-      autocmd BufLeave <buffer> lua dressing_prompt_confirm()
+      autocmd BufLeave <buffer> ++nested ++once lua dressing_prompt_confirm()
   ]])
   vim.cmd("startinsert!")
   if opts.default then
-    vim.fn.feedkeys(opts.default)
+    vim.api.nvim_feedkeys(opts.default, "n", false)
   end
   _G.dressing_prompt_hl()
 end
