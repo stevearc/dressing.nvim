@@ -61,7 +61,7 @@ return function(opts, on_confirm)
       cursor[2] = cursor[2] + 1
       vim.api.nvim_win_set_cursor(0, cursor)
     end
-    on_confirm(text)
+    vim.schedule_wrap(on_confirm)(text)
   end
   if opts.highlight then
     _G.dressing_prompt_hl = function()
