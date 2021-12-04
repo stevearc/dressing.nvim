@@ -1,9 +1,9 @@
 func! dressing#prompt_confirm(text) abort
-  call v:lua.dressing_prompt_confirm(a:text)
+  call luaeval("require('dressing.input').confirm(_A)", a:text)
 endfunc
 
 func! dressing#prompt_cancel() abort
-  lua dressing_prompt_confirm()
+  lua require('dressing.input').confirm()
 endfunc
 
 function! dressing#fzf_run(labels, options, window) abort
