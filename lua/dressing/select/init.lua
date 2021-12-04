@@ -16,7 +16,13 @@ end
 
 return function(items, opts, on_choice)
   vim.validate({
-    items = { items, "table", false },
+    items = {
+      items,
+      function(a)
+        return type(a) == "table" and vim.tbl_islist(a)
+      end,
+      "list-like table",
+    },
     on_choice = { on_choice, "function", false },
   })
   opts = opts or {}
