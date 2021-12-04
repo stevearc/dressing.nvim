@@ -41,9 +41,7 @@ M.select = function(config, items, opts, on_choice)
   local winnr = vim.api.nvim_open_win(bufnr, true, winopt)
   vim.api.nvim_win_set_option(winnr, "winblend", config.winblend)
   vim.api.nvim_win_set_option(winnr, "cursorline", true)
-  if vim.fn.exists("&cursorlineopt") ~= 0 then
-    vim.api.nvim_win_set_option(winnr, "cursorlineopt", "both")
-  end
+  pcall(vim.api.nvim_win_set_option, winnr, "cursorlineopt", "both")
 
   local function map(lhs, rhs)
     vim.api.nvim_buf_set_keymap(bufnr, "n", lhs, rhs, { silent = true, noremap = true })
