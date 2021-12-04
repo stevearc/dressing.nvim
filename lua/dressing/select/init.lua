@@ -28,7 +28,17 @@ return function(items, opts, on_choice)
   opts = opts or {}
   local config = global_config.get_mod_config("select", opts)
   opts.prompt = opts.prompt or "Select one of:"
-  opts.format_item = opts.format_item or tostring
+  if opts.format_item then
+    -- Make format_item doesn't *technically* have to return a string for the
+    -- core implementation. We should maintain compatibility by wrapping the
+    -- return value with tostring
+    local format_item = opts.format_item
+    opts.format_item = function(item)
+      return tostring(format_item(item))
+    end
+  else
+    opts.format_item = tostring
+  end
 
   local backend, name = get_backend(config)
   backend.select(config[name], items, opts, on_choice)
