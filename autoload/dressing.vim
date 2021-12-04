@@ -3,7 +3,7 @@ func! dressing#prompt_confirm(text) abort
 endfunc
 
 func! dressing#prompt_cancel() abort
-  lua dressing_prompt_cancel()
+  lua dressing_prompt_confirm()
 endfunc
 
 function! dressing#fzf_run(labels, options, window) abort

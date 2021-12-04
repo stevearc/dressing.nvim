@@ -3,7 +3,6 @@ local util = require("dressing.util")
 
 local function clear_callbacks()
   _G.dressing_prompt_confirm = function() end
-  _G.dressing_prompt_cancel = function() end
   _G.dressing_prompt_hl = function() end
 end
 
@@ -20,6 +19,7 @@ return function(opts, on_confirm)
   end
   local config = global_config.get_mod_config("input", opts)
 
+  local start_in_insert = vim.api.nvim_get_mode().mode == "i"
   local bufnr = vim.api.nvim_create_buf(false, true)
   local prompt = opts.prompt or config.default_prompt
   local width = util.calculate_width(config.prefer_width + vim.api.nvim_strwidth(prompt), config)
@@ -39,15 +39,21 @@ return function(opts, on_confirm)
   vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
   vim.fn.prompt_setprompt(bufnr, prompt)
+  -- Would prefer to use v:lua directly here, but it doesn't work :(
+  vim.fn.prompt_setcallback(bufnr, "dressing#prompt_confirm")
+  vim.fn.prompt_setinterrupt(bufnr, "dressing#prompt_cancel")
   _G.dressing_prompt_confirm = function(text)
     clear_callbacks()
     vim.api.nvim_win_close(winnr, true)
+    if not start_in_insert then
+      vim.cmd("stopinsert")
+      -- stopinsert will move the cursor back 1. We need to move it forward 1 to
+      -- put it in the place you were when you opened the modal.
+      local cursor = vim.api.nvim_win_get_cursor(0)
+      cursor[2] = cursor[2] + 1
+      vim.api.nvim_win_set_cursor(0, cursor)
+    end
     on_confirm(text)
-  end
-  _G.dressing_prompt_cancel = function()
-    clear_callbacks()
-    vim.api.nvim_win_close(winnr, true)
-    on_confirm(nil)
   end
   if opts.highlight then
     _G.dressing_prompt_hl = function()
@@ -72,11 +78,8 @@ return function(opts, on_confirm)
         autocmd TextChangedI <buffer> lua dressing_prompt_hl()
     ]])
   end
-  -- Would prefer to use v:lua directly here, but it doesn't work :(
-  vim.fn.prompt_setcallback(bufnr, "dressing#prompt_confirm")
-  vim.fn.prompt_setinterrupt(bufnr, "dressing#prompt_cancel")
   vim.cmd([[
-      autocmd BufLeave <buffer> call dressing#prompt_cancel()
+      autocmd BufLeave <buffer> lua dressing_prompt_confirm()
   ]])
   vim.cmd("startinsert!")
   if opts.default then
