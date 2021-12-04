@@ -38,6 +38,14 @@ return function(opts, on_confirm)
   vim.api.nvim_buf_set_option(bufnr, "buftype", "prompt")
   vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+  local keyopts = { silent = true, noremap = true }
+  vim.api.nvim_buf_set_keymap(
+    bufnr,
+    "i",
+    "<Esc>",
+    "<cmd>lua dressing_prompt_confirm()<CR>",
+    keyopts
+  )
   vim.fn.prompt_setprompt(bufnr, prompt)
   -- Would prefer to use v:lua directly here, but it doesn't work :(
   vim.fn.prompt_setcallback(bufnr, "dressing#prompt_confirm")
