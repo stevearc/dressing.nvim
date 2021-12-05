@@ -8,10 +8,18 @@ local context = {
   winid = nil,
 }
 
+local function close_completion_window()
+  if vim.fn.pumvisible() == 1 then
+    local escape_key = vim.api.nvim_replace_termcodes("<C-e>", true, false, true)
+    vim.api.nvim_feedkeys(escape_key, "n", true)
+  end
+end
+
 M.confirm = function(text)
   if not context.on_confirm then
     return
   end
+  close_completion_window()
   local ctx = context
   context = {}
   vim.api.nvim_win_close(ctx.winid, true)
@@ -145,7 +153,7 @@ setmetatable(M, {
       bufnr,
       "i",
       "<Esc>",
-      ":lua require('dressing.input').confirm()<CR>",
+      "<cmd>lua require('dressing.input').confirm()<CR>",
       keyopts
     )
     vim.fn.prompt_setprompt(bufnr, prompt)
@@ -177,12 +185,7 @@ setmetatable(M, {
       vim.api.nvim_feedkeys(opts.default, "n", false)
     end
 
-    -- Close the completion menu if visible
-    if vim.fn.pumvisible() == 1 then
-      local escape_key = vim.api.nvim_replace_termcodes("<C-e>", true, false, true)
-      vim.api.nvim_feedkeys(escape_key, "n", true)
-    end
-
+    close_completion_window()
     M.highlight()
   end,
 })
