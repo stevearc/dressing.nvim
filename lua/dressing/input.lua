@@ -21,6 +21,9 @@ M.confirm = function(text)
   local cursor = vim.api.nvim_win_get_cursor(0)
   cursor[2] = cursor[2] + 1
   vim.api.nvim_win_set_cursor(0, cursor)
+  if text == "" then
+    text = nil
+  end
   vim.schedule_wrap(ctx.on_confirm)(text)
 end
 
