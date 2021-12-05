@@ -47,6 +47,55 @@ M.highlight = function()
   end
 end
 
+local function split(string, pattern)
+  local ret = {}
+  for token in string.gmatch(string, "[^" .. pattern .. "]+") do
+    table.insert(ret, token)
+  end
+  return ret
+end
+
+M.completefunc = function(findstart, base)
+  if not context.opts or not context.opts.completion then
+    return findstart == 1 and 0 or {}
+  end
+  if findstart == 1 then
+    return vim.api.nvim_strwidth(context.opts.prompt)
+  else
+    local completion = context.opts.completion
+    local pieces = split(completion, ",")
+    if pieces[1] == "custom" or pieces[1] == "customlist" then
+      local vimfunc = pieces[2]
+      local ret = vim.fn[vimfunc](base, base, vim.fn.strlen(base))
+      print(vim.inspect(ret))
+      if pieces[1] == "custom" then
+        ret = split(ret, "\n")
+      end
+      return ret
+    else
+      local ok, result = pcall(vim.fn.getcompletion, base, context.opts.completion)
+      if ok then
+        return result
+      else
+        vim.api.nvim_err_writeln(
+          string.format("dressing.nvim: unsupported completion method '%s'", completion)
+        )
+        return {}
+      end
+    end
+  end
+end
+
+_G.dressing_input_complete = M.completefunc
+
+M.trigger_completion = function()
+  if vim.fn.pumvisible() == 1 then
+    return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
+  else
+    return vim.api.nvim_replace_termcodes("<C-x><C-u>", true, false, true)
+  end
+end
+
 setmetatable(M, {
   __call = function(_, opts, on_confirm)
     vim.validate({
@@ -69,7 +118,6 @@ setmetatable(M, {
       border = config.border,
       width = width,
       height = 1,
-      zindex = 150,
       style = "minimal",
     }
     local winnr
@@ -94,7 +142,7 @@ setmetatable(M, {
       bufnr,
       "i",
       "<Esc>",
-      "<cmd>lua require('dressing.input').confirm()<CR>",
+      ":lua require('dressing.input').confirm()<CR>",
       keyopts
     )
     vim.fn.prompt_setprompt(bufnr, prompt)
@@ -105,7 +153,18 @@ setmetatable(M, {
       vim.cmd([[
         autocmd TextChanged <buffer> lua require('dressing.input').highlight()
         autocmd TextChangedI <buffer> lua require('dressing.input').highlight()
-    ]])
+      ]])
+    end
+    if opts.completion then
+      vim.api.nvim_buf_set_option(bufnr, "completefunc", "v:lua.dressing_input_complete")
+      vim.api.nvim_buf_set_option(bufnr, "omnifunc", "")
+      vim.api.nvim_buf_set_keymap(
+        bufnr,
+        "i",
+        "<Tab>",
+        [[luaeval("require('dressing.input').trigger_completion()")]],
+        { expr = true }
+      )
     end
     vim.cmd([[
         autocmd BufLeave <buffer> ++nested ++once lua require('dressing.input').confirm()
@@ -114,6 +173,13 @@ setmetatable(M, {
     if opts.default then
       vim.api.nvim_feedkeys(opts.default, "n", false)
     end
+
+    -- Close the completion menu if visible
+    if vim.fn.pumvisible() == 1 then
+      local escape_key = vim.api.nvim_replace_termcodes("<C-e>", true, false, true)
+      vim.api.nvim_feedkeys(escape_key, "n", true)
+    end
+
     M.highlight()
   end,
 })
