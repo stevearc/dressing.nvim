@@ -45,7 +45,7 @@ On versions prior to 0.6, this plugin will act as a polyfill for `vim.ui`
 
 `vim.select` (built-in)
 
-![Screenshot from 2021-12-02 19-50-50](https://user-images.githubusercontent.com/506791/144542327-c7420501-c75d-40de-9fc8-70204ed16589.png)
+![Screenshot from 2021-12-04 17-14-32](https://user-images.githubusercontent.com/506791/144729527-ede0d7ba-a6e6-41e0-be5a-1a5f16d35b05.png)
 
 ## Installation
 dressing.nvim supports all the usual plugin managers
