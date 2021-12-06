@@ -35,6 +35,10 @@ M.select = function(config, items, opts, on_choice)
       actions.select_default:replace(function()
         local selection = state.get_selected_entry()
         actions._close(prompt_bufnr, false)
+        if not selection then
+          -- User did not select anything.
+          return
+        end
         local idx = nil
         for i, item in ipairs(items) do
           if item == selection.value then
