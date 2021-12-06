@@ -113,6 +113,9 @@ require('dressing').setup({
     -- Default prompt string
     default_prompt = "➤ ",
 
+    -- When true, <Esc> will close the modal
+    insert_only = true,
+
     -- These are passed to nvim_open_win
     anchor = "SW",
     relative = "cursor",
