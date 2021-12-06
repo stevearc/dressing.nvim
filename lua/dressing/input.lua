@@ -148,6 +148,7 @@ setmetatable(M, {
     vim.api.nvim_buf_set_option(bufnr, "buftype", "prompt")
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
     vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+    vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     local keyopts = { silent = true, noremap = true }
     local close_rhs = "<cmd>lua require('dressing.input').confirm()<CR>"
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", close_rhs, keyopts)
