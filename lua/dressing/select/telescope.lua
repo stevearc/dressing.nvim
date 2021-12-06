@@ -37,6 +37,7 @@ M.select = function(config, items, opts, on_choice)
         actions._close(prompt_bufnr, false)
         if not selection then
           -- User did not select anything.
+          on_choice(nil, nil)
           return
         end
         local idx = nil
