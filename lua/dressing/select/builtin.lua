@@ -43,6 +43,7 @@ M.select = function(config, items, opts, on_choice)
   vim.api.nvim_win_set_option(winnr, "winblend", config.winblend)
   vim.api.nvim_win_set_option(winnr, "cursorline", true)
   pcall(vim.api.nvim_win_set_option, winnr, "cursorlineopt", "both")
+  vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
 
   -- Create the title window once the main window is placed.
   -- Have to defer here or the title will be in the wrong location

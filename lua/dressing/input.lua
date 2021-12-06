@@ -148,14 +148,13 @@ setmetatable(M, {
     vim.api.nvim_buf_set_option(bufnr, "buftype", "prompt")
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
     vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+    vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     local keyopts = { silent = true, noremap = true }
-    vim.api.nvim_buf_set_keymap(
-      bufnr,
-      "i",
-      "<Esc>",
-      "<cmd>lua require('dressing.input').confirm()<CR>",
-      keyopts
-    )
+    local close_rhs = "<cmd>lua require('dressing.input').confirm()<CR>"
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", close_rhs, keyopts)
+    if config.insert_only then
+      vim.api.nvim_buf_set_keymap(bufnr, "i", "<Esc>", close_rhs, keyopts)
+    end
     vim.fn.prompt_setprompt(bufnr, prompt)
     -- Would prefer to use v:lua directly here, but it doesn't work :(
     vim.fn.prompt_setcallback(bufnr, "dressing#prompt_confirm")
