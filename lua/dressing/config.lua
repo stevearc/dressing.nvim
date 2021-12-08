@@ -18,6 +18,9 @@ local default_config = {
     max_width = nil,
     min_width = 20,
 
+    -- see :help dressing-prompt
+    prompt_buffer = false,
+
     -- see :help dressing_get_config
     get_config = nil,
   },
@@ -60,7 +63,7 @@ local default_config = {
       col = 0,
       border = "rounded",
 
-      -- Window options
+      -- Window transparency (0-100)
       winblend = 10,
 
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)

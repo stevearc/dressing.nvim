@@ -110,4 +110,19 @@ dressing.get_config()                                     *dressing_get_config()
     })
 
 ===============================================================================
+                                                                *dressing-prompt*
+Vim has a mechanism that is built for getting input from the user: the
+|prompt-buffer|. This is a specific |buftype| and comes with a lot of special
+handling within vim. Neovim 0.6 and earlier has some bugs with the prompt
+buffer (see https://github.com/stevearc/dressing.nvim/issues/2 and
+https://github.com/neovim/neovim/issues/13715). For this reason, the default
+implementation of |vim.ui.input| does NOT use the prompt buffer, and instead
+mimics its behavior through other means. If you don't mind the bugs, or if
+you're on a version of Neovim after 0.6 (nightly has the fixes now), you can
+pass `prompt_buffer = true` to use that implementation.
+
+There are slight visual differences in where the "prompt" text in placed, but
+otherwise they should be functionally identical.
+
+===============================================================================
 vim:ft=help:et:ts=2:sw=2:sts=2:norl

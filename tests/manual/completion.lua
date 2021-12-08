@@ -39,3 +39,13 @@ local function next()
 end
 
 next()
+
+-- Uncomment this to test opening a modal while the previous one is open
+-- vim.ui.input(cases[1], function(text)
+--   print(text)
+-- end)
+-- vim.defer_fn(function()
+--   vim.ui.input(cases[2], function(text)
+--     print(text)
+--   end)
+-- end, 2000)
