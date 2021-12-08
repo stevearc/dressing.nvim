@@ -78,7 +78,6 @@ M.completefunc = function(findstart, base)
     if pieces[1] == "custom" or pieces[1] == "customlist" then
       local vimfunc = pieces[2]
       local ret = vim.fn[vimfunc](base, base, vim.fn.strlen(base))
-      print(vim.inspect(ret))
       if pieces[1] == "custom" then
         ret = split(ret, "\n")
       end
