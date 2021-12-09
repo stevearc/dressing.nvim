@@ -182,6 +182,7 @@ setmetatable(M, {
       on_confirm = on_confirm,
       opts = opts,
     }
+    vim.api.nvim_win_set_option(winid, "winblend", config.winblend)
 
     -- Finish setting up the buffer
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
@@ -241,6 +242,7 @@ setmetatable(M, {
         if winid == context.winid then
           context.title_winid = title_winid
         end
+        vim.api.nvim_win_set_option(title_winid, "winblend", config.winblend)
         vim.api.nvim_buf_set_lines(titlebuf, 0, -1, true, { " " .. trimmed_prompt })
         vim.api.nvim_buf_set_option(titlebuf, "bufhidden", "wipe")
       end, 5)

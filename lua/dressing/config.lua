@@ -18,6 +18,9 @@ local default_config = {
     max_width = nil,
     min_width = 20,
 
+    -- Window transparency (0-100)
+    winblend = 10,
+
     -- see :help dressing-prompt
     prompt_buffer = false,
 
