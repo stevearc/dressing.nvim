@@ -92,6 +92,8 @@ M.update = function(opts)
   end
 end
 
+-- Used to get the effective config value for a module.
+-- Use like: config.get_mod_config('input')
 M.get_mod_config = function(key, ...)
   if not M[key].get_config then
     return M[key]
