@@ -11,12 +11,12 @@ respects will be respected, and we will not accept any custom parameters or
 options in the functions. Customization will be done entirely using a separate
 [configuration](#configuration) method.
 
-* [Requirements](#requirements)
-* [Screenshots](#screenshots)
-* [Installation](#installation)
-* [Configuration](#configuration)
-* [Advanced configuration](#advanced-configuration)
-* [Similar projects](#similar-projects)
+- [Requirements](#requirements)
+- [Screenshots](#screenshots)
+- [Installation](#installation)
+- [Configuration](#configuration)
+- [Advanced configuration](#advanced-configuration)
+- [Similar projects](#similar-projects)
 
 ## Requirements
 
@@ -28,7 +28,7 @@ On versions prior to 0.6, this plugin will act as a polyfill for `vim.ui`
 
 `vim.input` replacement (handling a LSP rename)
 
-![Screenshot from 2021-12-02 19-43-00](https://user-images.githubusercontent.com/506791/144541672-17db1045-6ab6-4422-a09e-b2257965817e.png)
+![Screenshot from 2021-12-09 17-36-16](https://user-images.githubusercontent.com/506791/145502533-3dc2f87d-95ea-422d-a318-12c0092f1bdf.png)
 
 `vim.select` (telescope)
 
@@ -42,68 +42,75 @@ On versions prior to 0.6, this plugin will act as a polyfill for `vim.ui`
 
 ![Screenshot from 2021-12-02 19-47-56](https://user-images.githubusercontent.com/506791/144542071-1aa66f81-b07c-492e-9884-fdafed1006df.png)
 
-
 `vim.select` (built-in)
 
 ![Screenshot from 2021-12-04 17-14-32](https://user-images.githubusercontent.com/506791/144729527-ede0d7ba-a6e6-41e0-be5a-1a5f16d35b05.png)
 
 ## Installation
+
 dressing.nvim supports all the usual plugin managers
 
 <details>
   <summary>Packer</summary>
 
-  ```lua
-  require('packer').startup(function()
-      use {'stevearc/dressing.nvim'}
-  end)
-  ```
+```lua
+require('packer').startup(function()
+    use {'stevearc/dressing.nvim'}
+end)
+```
+
 </details>
 
 <details>
   <summary>Paq</summary>
 
-  ```lua
-  require "paq" {
-      {'stevearc/dressing.nvim'};
-  }
-  ```
+```lua
+require "paq" {
+    {'stevearc/dressing.nvim'};
+}
+```
+
 </details>
 
 <details>
   <summary>vim-plug</summary>
 
-  ```vim
-  Plug 'stevearc/dressing.nvim'
-  ```
+```vim
+Plug 'stevearc/dressing.nvim'
+```
+
 </details>
 
 <details>
   <summary>dein</summary>
 
-  ```vim
-  call dein#add('stevearc/dressing.nvim')
-  ```
+```vim
+call dein#add('stevearc/dressing.nvim')
+```
+
 </details>
 
 <details>
   <summary>Pathogen</summary>
 
-  ```sh
-  git clone --depth=1 https://github.com/stevearc/dressing.nvim.git ~/.vim/bundle/
-  ```
+```sh
+git clone --depth=1 https://github.com/stevearc/dressing.nvim.git ~/.vim/bundle/
+```
+
 </details>
 
 <details>
   <summary>Neovim native package</summary>
 
-  ```sh
-  git clone --depth=1 https://github.com/stevearc/dressing.nvim.git \
-    "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/pack/dressing.nvim/start/dressing.nvim
-  ```
+```sh
+git clone --depth=1 https://github.com/stevearc/dressing.nvim.git \
+  "${XDG_DATA_HOME:-$HOME/.local/share}"/nvim/site/pack/dressing.nvim/start/dressing.nvim
+```
+
 </details>
 
 ## Configuration
+
 If you're fine with the defaults, you're good to go after installation. If you
 want to tweak, call this function:
 
@@ -195,6 +202,7 @@ require('dressing').setup({
 ```
 
 ## Advanced configuration
+
 For each of the `input` and `select` configs, there is an option
 `get_config`. This can be a function that accepts the `opts` parameter that
 is passed in to `vim.select` or `vim.input`. It must return either `nil` (to
@@ -202,6 +210,7 @@ no-op) or config values to use in place of the global config values for that
 module.
 
 For example, if you want to use a specific configuration for code actions:
+
 ```lua
 require('dressing').setup({
   select = {
@@ -220,8 +229,10 @@ require('dressing').setup({
 })
 
 ```
+
 ## Similar projects
-* [nvim-notify](https://github.com/rcarriga/nvim-notify) - doing pretty much the
-    same thing but for `vim.notify`
-* [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - provides common UI
-    components for plugin authors
+
+- [nvim-notify](https://github.com/rcarriga/nvim-notify) - doing pretty much the
+  same thing but for `vim.notify`
+- [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - provides common UI
+  components for plugin authors
