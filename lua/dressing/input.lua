@@ -23,6 +23,7 @@ M.confirm = function(text)
   close_completion_window()
   local ctx = context
   context = {}
+  vim.cmd("stopinsert")
   -- We have to wait briefly for the popup window to close (if present),
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
   -- deleted from the buffer after the input window closes.
@@ -31,12 +32,6 @@ M.confirm = function(text)
       pcall(vim.api.nvim_win_close, ctx.title_winid, true)
     end
     pcall(vim.api.nvim_win_close, ctx.winid, true)
-    vim.cmd("stopinsert")
-    -- stopinsert will move the cursor back 1. We need to move it forward 1 to
-    -- put it in the place you were when you opened the modal.
-    local cursor = vim.api.nvim_win_get_cursor(0)
-    cursor[2] = cursor[2] + 1
-    vim.api.nvim_win_set_cursor(0, cursor)
     if text == "" then
       text = nil
     end
