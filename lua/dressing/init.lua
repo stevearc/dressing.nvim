@@ -4,6 +4,16 @@ local M = {}
 
 M.setup = function(opts)
   config.update(opts)
+  -- Wait until vim has fully started up before we show deprecation warnings
+  vim.defer_fn(function()
+    if config.input.prompt_buffer then
+      vim.notify(
+        "dressing.nvim option 'input.prompt_buffer = true' is deprecated and will be removed in a future version. If you want it to continue to be supported please file an issue with your use case: https://github.com/stevearc/dressing.nvim/issues/new",
+        vim.log.levels.WARN,
+        {}
+      )
+    end
+  end, 100)
 end
 
 local original_input

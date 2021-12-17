@@ -138,9 +138,6 @@ require('dressing').setup({
     -- Window transparency (0-100)
     winblend = 10,
 
-    -- see :help dressing-prompt
-    prompt_buffer = false,
-
     -- see :help dressing_get_config
     get_config = nil,
   },
