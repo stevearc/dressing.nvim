@@ -205,7 +205,6 @@ require('dressing').setup({
 ```
 
 ## Advanced configuration
-
 For each of the `input` and `select` configs, there is an option
 `get_config`. This can be a function that accepts the `opts` parameter that
 is passed in to `vim.select` or `vim.input`. It must return either `nil` (to
@@ -213,7 +212,6 @@ no-op) or config values to use in place of the global config values for that
 module.
 
 For example, if you want to use a specific configuration for code actions:
-
 ```lua
 require('dressing').setup({
   select = {
@@ -232,7 +230,6 @@ require('dressing').setup({
 })
 
 ```
-
 ## Alternative and related projects
 
 - [telescope-ui-select](https://github.com/nvim-telescope/telescope-ui-select.nvim) - provides a `vim.ui.select` implementation for telescope
