@@ -78,6 +78,9 @@ local default_config = {
       min_height = 10,
     },
 
+    -- Used to override format_item. See :help dressing-format
+    format_item_override = {},
+
     -- see :help dressing_get_config
     get_config = nil,
   },

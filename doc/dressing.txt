@@ -131,4 +131,22 @@ There are slight visual differences in where the "prompt" text in placed, but
 otherwise they should be functionally identical.
 
 ===============================================================================
+                                                                *dressing-format*
+Sometimes you may wish to change how choices are displayed for
+`vim.ui.select`. The calling function can pass a specific "kind" to the select
+function (for example, code actions from |vim.lsp.buf.code_action|
+use kind="codeaction"). You can, in turn, specify an override for the
+"format_item" function when selecting for that kind. For example, this
+configuration will display the name of the language server next to code
+actions:
+>
+    format_item_override = {
+      codeaction = function(action_tuple)
+        local title = action_tuple[2].title:gsub("\r\n", "\\r\\n")
+        local client = vim.lsp.get_client_by_id(action_tuple[1])
+        return string.format("%s\t[%s]", title:gsub("\n", "\\n"), client.name)
+      end,
+    }
+
+===============================================================================
 vim:ft=help:et:ts=2:sw=2:sts=2:norl

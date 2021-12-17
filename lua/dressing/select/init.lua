@@ -28,8 +28,11 @@ return function(items, opts, on_choice)
   opts = opts or {}
   local config = global_config.get_mod_config("select", opts)
   opts.prompt = opts.prompt or "Select one of:"
-  if opts.format_item then
-    -- Make format_item doesn't *technically* have to return a string for the
+  local format_override = config.format_item_override[opts.kind]
+  if format_override then
+    opts.format_item = format_override
+  elseif opts.format_item then
+    -- format_item doesn't *technically* have to return a string for the
     -- core implementation. We should maintain compatibility by wrapping the
     -- return value with tostring
     local format_item = opts.format_item
