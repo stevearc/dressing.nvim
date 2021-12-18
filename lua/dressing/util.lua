@@ -100,6 +100,9 @@ M.add_title_to_win = function(winid, title, opts)
       ))
     end
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { " " .. title .. " " })
+    local ns = vim.api.nvim_create_namespace("DressingWindow")
+    vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+    vim.api.nvim_buf_add_highlight(bufnr, ns, "FloatTitle", 0, 0, -1)
   end, 10)
 end
 
