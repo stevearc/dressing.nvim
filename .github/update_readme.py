@@ -77,11 +77,14 @@ def main() -> None:
     get_config_lines = read_section(DOC, r"^dressing.get_config", "^===")
     for i, line in enumerate(get_config_lines):
         if re.match(r"^\s*>$", line):
-            get_config_lines[i] = "```lua\n"
+            get_config_lines[i] = "\n```lua\n"
             break
-    get_config_lines.append("```\n")
+    get_config_lines.append("```\n\n")
     replace_section(
-        README, r"^## Advanced configuration", r"^#", indent(get_config_lines, -4)
+        README,
+        r"^## Advanced configuration",
+        r"^#",
+        ["\n"] + indent(get_config_lines, -4),
     )
 
 
