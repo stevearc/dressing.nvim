@@ -6,7 +6,6 @@ local context = {
   opts = nil,
   on_confirm = nil,
   winid = nil,
-  title_winid = nil,
 }
 
 local function close_completion_window()
@@ -28,9 +27,6 @@ M.confirm = function(text)
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
   -- deleted from the buffer after the input window closes.
   vim.defer_fn(function()
-    if ctx.title_winid then
-      pcall(vim.api.nvim_win_close, ctx.title_winid, true)
-    end
     pcall(vim.api.nvim_win_close, ctx.winid, true)
     if text == "" then
       text = nil
@@ -158,7 +154,7 @@ setmetatable(M, {
       height = 1,
       style = "minimal",
     }
-    local winid, bufnr, title_winid
+    local winid, bufnr
     -- If the input window is already open, hijack it
     if context.winid and vim.api.nvim_win_is_valid(context.winid) then
       winid = context.winid
@@ -166,14 +162,12 @@ setmetatable(M, {
       vim.schedule(context.on_confirm)
       vim.api.nvim_win_set_width(winid, width)
       bufnr = vim.api.nvim_win_get_buf(winid)
-      title_winid = context.title_winid
     else
       bufnr = vim.api.nvim_create_buf(false, true)
       winid = vim.api.nvim_open_win(bufnr, true, winopt)
     end
     context = {
       winid = winid,
-      title_winid = title_winid,
       on_confirm = on_confirm,
       opts = opts,
     }
@@ -209,38 +203,7 @@ setmetatable(M, {
       if ok then
         cmp.setup.buffer({ enabled = false })
       end
-      -- Create the title window once the main window is placed.
-      -- Have to defer here or the title will be in the wrong location
-      vim.defer_fn(function()
-        local titlebuf
-        local trimmed_prompt = string.gsub(prompt, "^%s*(.-)%s*$", "%1")
-        local prompt_width = math.min(width, 2 + vim.api.nvim_strwidth(trimmed_prompt))
-        if context.title_winid and vim.api.nvim_win_is_valid(context.title_winid) then
-          title_winid = context.title_winid
-          titlebuf = vim.api.nvim_win_get_buf(title_winid)
-          vim.api.nvim_win_set_width(title_winid, prompt_width)
-        else
-          titlebuf = vim.api.nvim_create_buf(false, true)
-          title_winid = vim.api.nvim_open_win(titlebuf, false, {
-            relative = "win",
-            win = winid,
-            width = prompt_width,
-            height = 1,
-            row = -1,
-            col = 1,
-            focusable = false,
-            zindex = 151,
-            style = "minimal",
-            noautocmd = true,
-          })
-        end
-        if winid == context.winid then
-          context.title_winid = title_winid
-        end
-        vim.api.nvim_win_set_option(title_winid, "winblend", config.winblend)
-        vim.api.nvim_buf_set_lines(titlebuf, 0, -1, true, { " " .. trimmed_prompt })
-        vim.api.nvim_buf_set_option(titlebuf, "bufhidden", "wipe")
-      end, 5)
+      util.add_title_to_win(winid, string.gsub(prompt, "^%s*(.-)%s*$", "%1"), { align = "left" })
     end
 
     if opts.highlight then

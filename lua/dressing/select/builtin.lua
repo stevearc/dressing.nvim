@@ -44,29 +44,7 @@ M.select = function(config, items, opts, on_choice)
   vim.api.nvim_win_set_option(winnr, "cursorline", true)
   pcall(vim.api.nvim_win_set_option, winnr, "cursorlineopt", "both")
   vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
-
-  -- Create the title window once the main window is placed.
-  -- Have to defer here or the title will be in the wrong location
-  vim.defer_fn(function()
-    local titlebuf = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_lines(titlebuf, 0, -1, true, { " " .. opts.prompt })
-    vim.api.nvim_buf_set_option(titlebuf, "bufhidden", "wipe")
-    local prompt_width = math.min(width, 2 + vim.api.nvim_strwidth(opts.prompt))
-    local titlewin = vim.api.nvim_open_win(titlebuf, false, {
-      relative = "win",
-      win = winnr,
-      width = prompt_width,
-      height = 1,
-      row = -1,
-      col = (width - prompt_width) / 2,
-      focusable = false,
-      zindex = 151,
-      style = "minimal",
-      noautocmd = true,
-    })
-    vim.api.nvim_buf_set_var(bufnr, "dressing_title_window", titlewin)
-    vim.api.nvim_win_set_option(titlewin, "winblend", config.winblend)
-  end, 5)
+  util.add_title_to_win(winnr, opts.prompt)
 
   local function map(lhs, rhs)
     vim.api.nvim_buf_set_keymap(bufnr, "n", lhs, rhs, { silent = true, noremap = true })
@@ -84,10 +62,6 @@ local function close_window()
   local callback = _callback
   local items = _items
   clear_callback()
-  local ok, titlewin = pcall(vim.api.nvim_buf_get_var, 0, "dressing_title_window")
-  if ok and vim.api.nvim_win_is_valid(titlewin) then
-    vim.api.nvim_win_close(titlewin, true)
-  end
   vim.api.nvim_win_close(0, true)
   return callback, items
 end
