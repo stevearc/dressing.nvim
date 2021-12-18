@@ -202,6 +202,7 @@ require('dressing').setup({
 ```
 
 ## Advanced configuration
+
 For each of the `input` and `select` configs, there is an option
 `get_config`. This can be a function that accepts the `opts` parameter that
 is passed in to `vim.select` or `vim.input`. It must return either `nil` (to
@@ -209,6 +210,7 @@ no-op) or config values to use in place of the global config values for that
 module.
 
 For example, if you want to use a specific configuration for code actions:
+
 ```lua
 require('dressing').setup({
   select = {
@@ -227,10 +229,12 @@ require('dressing').setup({
 })
 
 ```
+
 ## Alternative and related projects
 
 - [telescope-ui-select](https://github.com/nvim-telescope/telescope-ui-select.nvim) - provides a `vim.ui.select` implementation for telescope
 - [nvim-fzy](https://github.com/mfussenegger/nvim-fzy) - fzf alternative that also provides a `vim.ui.select` implementation ([#13](https://github.com/mfussenegger/nvim-fzy/pull/13))
+- [guihua.lua](https://github.com/ray-x/guihua.lua) - multipurpose GUI library that provides `vim.ui.select` and `vim.ui.input` implementations
 - [nvim-notify](https://github.com/rcarriga/nvim-notify) - doing pretty much the
   same thing but for `vim.notify`
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - provides common UI
