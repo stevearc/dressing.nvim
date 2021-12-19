@@ -196,7 +196,7 @@ setmetatable(M, {
       vim.api.nvim_buf_set_keymap(bufnr, "i", "<C-c>", close_rhs, keyopts)
       vim.api.nvim_buf_set_keymap(bufnr, "i", "<CR>", confirm_rhs, keyopts)
       vim.api.nvim_buf_set_keymap(bufnr, "n", "<CR>", confirm_rhs, keyopts)
-      vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { "" })
+      vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
       -- Disable nvim-cmp if installed
       local ok, cmp = pcall(require, "cmp")
       if ok then
@@ -233,7 +233,7 @@ setmetatable(M, {
     ]])
 
     vim.cmd("startinsert!")
-    if opts.default then
+    if opts.default and config.prompt_buffer then
       vim.api.nvim_feedkeys(opts.default, "n", false)
     end
 
