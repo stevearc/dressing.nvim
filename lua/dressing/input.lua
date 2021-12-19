@@ -51,15 +51,14 @@ M.close = function()
 end
 
 M.highlight = function()
-  if not context.opts or not context.opts.highlight then
-    return
-  end
   local bufnr = vim.api.nvim_win_get_buf(context.winid)
   local opts = context.opts
   local text = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
-  local ns = vim.api.nvim_create_namespace("DressingHl")
+  local ns = vim.api.nvim_create_namespace("DressingHighlight")
   local highlights
-  if type(opts.highlight) == "function" then
+  if not opts.highlight then
+    highlights = { { 0, -1, "DressingInputText" } }
+  elseif type(opts.highlight) == "function" then
     highlights = opts.highlight(text)
   else
     highlights = vim.fn[opts.highlight](text)
@@ -206,12 +205,13 @@ setmetatable(M, {
       util.add_title_to_win(winid, string.gsub(prompt, "^%s*(.-)%s*$", "%1"), { align = "left" })
     end
 
-    if opts.highlight then
-      vim.cmd([[
+    vim.cmd([[
+      aug DressingHighlight
+        autocmd! * <buffer>
         autocmd TextChanged <buffer> lua require('dressing.input').highlight()
         autocmd TextChangedI <buffer> lua require('dressing.input').highlight()
-      ]])
-    end
+      aug END
+    ]])
 
     if opts.completion then
       vim.api.nvim_buf_set_option(bufnr, "completefunc", "v:lua.dressing_input_complete")
@@ -226,7 +226,10 @@ setmetatable(M, {
     end
 
     vim.cmd([[
+      aug DressingCloseWin
+        autocmd! * <buffer>
         autocmd BufLeave <buffer> ++nested ++once lua require('dressing.input').close()
+      aug END
     ]])
 
     vim.cmd("startinsert!")
