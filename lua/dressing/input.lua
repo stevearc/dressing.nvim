@@ -174,6 +174,7 @@ setmetatable(M, {
       opts = opts,
     }
     vim.api.nvim_win_set_option(winid, "winblend", config.winblend)
+    vim.api.nvim_win_set_option(winid, "winhighlight", config.winhighlight)
 
     -- Finish setting up the buffer
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)

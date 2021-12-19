@@ -45,6 +45,7 @@ M.select = function(config, items, opts, on_choice)
   }
   local winnr = vim.api.nvim_open_win(bufnr, true, winopt)
   vim.api.nvim_win_set_option(winnr, "winblend", config.winblend)
+  vim.api.nvim_win_set_option(winnr, "winhighlight", config.winhighlight)
   vim.api.nvim_win_set_option(winnr, "cursorline", true)
   pcall(vim.api.nvim_win_set_option, winnr, "cursorlineopt", "both")
   vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
