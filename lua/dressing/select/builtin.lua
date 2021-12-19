@@ -28,7 +28,7 @@ M.select = function(config, items, opts, on_choice)
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
   vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
   local ns = vim.api.nvim_create_namespace("DressingWindow")
-  for i = 1, #lines, 1 do
+  for i = 0, #lines - 1, 1 do
     vim.api.nvim_buf_add_highlight(bufnr, ns, "DressingSelectText", i, 0, -1)
   end
   local width = util.calculate_width(max_width, config)
