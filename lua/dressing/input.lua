@@ -51,6 +51,9 @@ M.close = function()
 end
 
 M.highlight = function()
+  if not context.opts then
+    return
+  end
   local bufnr = vim.api.nvim_win_get_buf(context.winid)
   local opts = context.opts
   local text = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
