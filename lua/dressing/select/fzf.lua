@@ -11,6 +11,12 @@ end
 
 clear_callback()
 
+M._on_term_close = function()
+  if vim.v.event.status ~= 0 then
+    _G.dressing_fzf_cancel()
+  end
+end
+
 M.select = function(config, items, opts, on_choice)
   local labels = {}
   for i, item in ipairs(items) do
@@ -29,8 +35,7 @@ M.select = function(config, items, opts, on_choice)
   end
   vim.fn["dressing#fzf_run"](labels, string.format('--prompt="%s"', opts.prompt), config.window)
   -- fzf doesn't have a cancel callback, so we have to make one.
-  -- the defer_fn is so that we can process the confirm event first
-  vim.cmd([[autocmd BufLeave <buffer> lua vim.defer_fn(function() dressing_fzf_cancel() end, 5)]])
+  vim.cmd([[autocmd TermClose <buffer> ++once lua require('dressing.select.fzf')._on_term_close()]])
 end
 
 return M
