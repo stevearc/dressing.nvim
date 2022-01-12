@@ -15,7 +15,7 @@ local function close_completion_window()
   end
 end
 
-M.confirm = function(text)
+local function confirm(text)
   if not context.on_confirm then
     return
   end
@@ -41,13 +41,13 @@ M.confirm = function(text)
   end, 5)
 end
 
-M.confirm_non_prompt = function()
+M.confirm = function()
   local text = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
-  M.confirm(text)
+  confirm(text)
 end
 
 M.close = function()
-  M.confirm()
+  confirm()
 end
 
 M.highlight = function()
@@ -88,11 +88,7 @@ M.completefunc = function(findstart, base)
     return findstart == 1 and 0 or {}
   end
   if findstart == 1 then
-    if global_config.input.prompt_buffer then
-      return vim.api.nvim_strwidth(context.opts.prompt)
-    else
-      return 0
-    end
+    return 0
   else
     local completion = context.opts.completion
     local pieces = split(completion, ",")
@@ -140,12 +136,7 @@ setmetatable(M, {
 
     -- Create or update the window
     local prompt = opts.prompt or config.default_prompt
-    local width
-    if config.prompt_buffer then
-      width = util.calculate_width(config.prefer_width + vim.api.nvim_strwidth(prompt), config)
-    else
-      width = util.calculate_width(config.prefer_width, config)
-    end
+    local width = util.calculate_width(config.prefer_width, config)
     local winopt = {
       relative = config.relative,
       anchor = config.anchor,
@@ -187,27 +178,17 @@ setmetatable(M, {
       vim.api.nvim_buf_set_keymap(bufnr, "i", "<Esc>", close_rhs, keyopts)
     end
 
-    if config.prompt_buffer then
-      vim.api.nvim_buf_set_option(bufnr, "buftype", "prompt")
-      vim.fn.prompt_setprompt(bufnr, prompt)
-      -- Would prefer to use v:lua directly here, but it doesn't work :(
-      vim.fn.prompt_setcallback(bufnr, "dressing#prompt_confirm")
-      vim.fn.prompt_setinterrupt(bufnr, "dressing#prompt_cancel")
-    else
-      local confirm_rhs = "<cmd>lua require('dressing.input').confirm_non_prompt()<CR>"
-      -- If we're not using the prompt buffer, we need to put the prompt into a
-      -- separate title window that will appear in the input window border
-      vim.api.nvim_buf_set_keymap(bufnr, "i", "<C-c>", close_rhs, keyopts)
-      vim.api.nvim_buf_set_keymap(bufnr, "i", "<CR>", confirm_rhs, keyopts)
-      vim.api.nvim_buf_set_keymap(bufnr, "n", "<CR>", confirm_rhs, keyopts)
-      vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
-      -- Disable nvim-cmp if installed
-      local ok, cmp = pcall(require, "cmp")
-      if ok then
-        cmp.setup.buffer({ enabled = false })
-      end
-      util.add_title_to_win(winid, string.gsub(prompt, "^%s*(.-)%s*$", "%1"), { align = "left" })
+    local confirm_rhs = "<cmd>lua require('dressing.input').confirm()<CR>"
+    vim.api.nvim_buf_set_keymap(bufnr, "i", "<C-c>", close_rhs, keyopts)
+    vim.api.nvim_buf_set_keymap(bufnr, "i", "<CR>", confirm_rhs, keyopts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<CR>", confirm_rhs, keyopts)
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
+    -- Disable nvim-cmp if installed
+    local ok, cmp = pcall(require, "cmp")
+    if ok then
+      cmp.setup.buffer({ enabled = false })
     end
+    util.add_title_to_win(winid, string.gsub(prompt, "^%s*(.-)%s*$", "%1"), { align = "left" })
 
     vim.cmd([[
       aug DressingHighlight
@@ -237,10 +218,6 @@ setmetatable(M, {
     ]])
 
     vim.cmd("startinsert!")
-    if opts.default and config.prompt_buffer then
-      vim.api.nvim_feedkeys(opts.default, "n", false)
-    end
-
     close_completion_window()
     M.highlight()
   end,
