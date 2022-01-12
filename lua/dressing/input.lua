@@ -6,7 +6,37 @@ local context = {
   opts = nil,
   on_confirm = nil,
   winid = nil,
+  history_idx = nil,
+  history_tip = nil,
 }
+
+local function set_input(text)
+  vim.api.nvim_buf_set_lines(0, 0, -1, true, { text })
+  vim.api.nvim_win_set_cursor(0, { 1, vim.api.nvim_strwidth(text) })
+end
+local history = {}
+M.history_prev = function()
+  if context.history_idx == nil then
+    context.history_tip = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
+    context.history_idx = #history
+  elseif context.history_idx == 1 then
+    return
+  else
+    context.history_idx = context.history_idx - 1
+  end
+  set_input(history[context.history_idx])
+end
+M.history_next = function()
+  if not context.history_idx then
+    return
+  elseif context.history_idx == #history then
+    context.history_idx = nil
+    set_input(context.history_tip)
+  else
+    context.history_idx = context.history_idx + 1
+    set_input(history[context.history_idx])
+  end
+end
 
 local function close_completion_window()
   if vim.fn.pumvisible() == 1 then
@@ -30,6 +60,9 @@ local function confirm(text)
     pcall(vim.api.nvim_win_close, ctx.winid, true)
     if text == "" then
       text = nil
+    end
+    if text and history[#history] ~= text then
+      table.insert(history, text)
     end
     -- Defer the callback because we just closed windows and left insert mode.
     -- In practice from my testing, if the user does something right now (like,
@@ -163,6 +196,7 @@ setmetatable(M, {
       winid = winid,
       on_confirm = on_confirm,
       opts = opts,
+      history_idx = nil,
     }
     vim.api.nvim_win_set_option(winid, "winblend", config.winblend)
     vim.api.nvim_win_set_option(winid, "winhighlight", config.winhighlight)
@@ -182,6 +216,20 @@ setmetatable(M, {
     vim.api.nvim_buf_set_keymap(bufnr, "i", "<C-c>", close_rhs, keyopts)
     vim.api.nvim_buf_set_keymap(bufnr, "i", "<CR>", confirm_rhs, keyopts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<CR>", confirm_rhs, keyopts)
+    vim.api.nvim_buf_set_keymap(
+      bufnr,
+      "i",
+      "<Up>",
+      "<cmd>lua require('dressing.input').history_prev()<CR>",
+      keyopts
+    )
+    vim.api.nvim_buf_set_keymap(
+      bufnr,
+      "i",
+      "<Down>",
+      "<cmd>lua require('dressing.input').history_next()<CR>",
+      keyopts
+    )
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
     -- Disable nvim-cmp if installed
     local ok, cmp = pcall(require, "cmp")
