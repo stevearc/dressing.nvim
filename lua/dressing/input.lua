@@ -172,7 +172,16 @@ setmetatable(M, {
 
     -- Create or update the window
     local prompt = opts.prompt or config.default_prompt
-    local width = util.calculate_width(config.prefer_width, config)
+
+    -- First calculate the desired base width of the modal
+    local prefer_width = util.calculate_width(config.prefer_width, config)
+    -- Then expand the width to fit the prompt and default value
+    prefer_width = math.max(prefer_width, 4 + vim.api.nvim_strwidth(prompt))
+    if opts.default then
+      prefer_width = math.max(prefer_width, 2 + vim.api.nvim_strwidth(opts.default))
+    end
+    -- Then recalculate to clamp final value to min/max
+    local width = util.calculate_width(prefer_width, config)
     local winopt = {
       relative = config.relative,
       anchor = config.anchor,
