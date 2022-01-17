@@ -179,6 +179,7 @@ setmetatable(M, {
       width = width,
       height = 1,
       style = "minimal",
+      noautocmd = true,
     }
     local winid, bufnr
     -- If the input window is already open, hijack it
