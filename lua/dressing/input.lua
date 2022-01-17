@@ -8,6 +8,7 @@ local context = {
   winid = nil,
   history_idx = nil,
   history_tip = nil,
+  start_in_insert = nil,
 }
 
 local function set_input(text)
@@ -52,7 +53,9 @@ local function confirm(text)
   close_completion_window()
   local ctx = context
   context = {}
-  vim.cmd("stopinsert")
+  if not ctx.start_in_insert then
+    vim.cmd("stopinsert")
+  end
   -- We have to wait briefly for the popup window to close (if present),
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
   -- deleted from the buffer after the input window closes.
@@ -181,7 +184,7 @@ setmetatable(M, {
       style = "minimal",
       noautocmd = true,
     }
-    local winid, bufnr
+    local winid, bufnr, start_in_insert
     -- If the input window is already open, hijack it
     if context.winid and vim.api.nvim_win_is_valid(context.winid) then
       winid = context.winid
@@ -189,7 +192,9 @@ setmetatable(M, {
       vim.schedule(context.on_confirm)
       vim.api.nvim_win_set_width(winid, width)
       bufnr = vim.api.nvim_win_get_buf(winid)
+      start_in_insert = context.start_in_insert
     else
+      start_in_insert = string.sub(vim.api.nvim_get_mode().mode, 1, 2) == "i"
       bufnr = vim.api.nvim_create_buf(false, true)
       winid = vim.api.nvim_open_win(bufnr, true, winopt)
     end
@@ -198,6 +203,7 @@ setmetatable(M, {
       on_confirm = on_confirm,
       opts = opts,
       history_idx = nil,
+      start_in_insert = start_in_insert,
     }
     vim.api.nvim_win_set_option(winid, "winblend", config.winblend)
     vim.api.nvim_win_set_option(winid, "winhighlight", config.winhighlight)
