@@ -28,7 +28,7 @@ local default_config = {
   },
   select = {
     -- Priority list of preferred vim.select implementations
-    backend = { "telescope", "fzf", "builtin", "nui" },
+    backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
 
     -- Options for telescope selector
     telescope = {
@@ -39,6 +39,14 @@ local default_config = {
     -- Options for fzf selector
     fzf = {
       window = {
+        width = 0.5,
+        height = 0.4,
+      },
+    },
+
+    -- Options for fzf_lua selector
+    fzf_lua = {
+      winopts = {
         width = 0.5,
         height = 0.4,
       },
