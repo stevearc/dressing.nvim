@@ -203,7 +203,7 @@ setmetatable(M, {
       bufnr = vim.api.nvim_win_get_buf(winid)
       start_in_insert = context.start_in_insert
     else
-      start_in_insert = string.sub(vim.api.nvim_get_mode().mode, 1, 2) == "i"
+      start_in_insert = string.sub(vim.api.nvim_get_mode().mode, 1, 1) == "i"
       bufnr = vim.api.nvim_create_buf(false, true)
       winid = vim.api.nvim_open_win(bufnr, true, winopt)
     end
