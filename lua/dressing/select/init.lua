@@ -14,7 +14,9 @@ local function get_backend(config)
   return require("dressing.select.builtin"), "builtin"
 end
 
-return function(items, opts, on_choice)
+-- use schedule_wrap to avoid a bug when vim opens
+-- (see https://github.com/stevearc/dressing.nvim/issues/15)
+return vim.schedule_wrap(function(items, opts, on_choice)
   vim.validate({
     items = {
       items,
@@ -45,4 +47,4 @@ return function(items, opts, on_choice)
 
   local backend, name = get_backend(config)
   backend.select(config[name], items, opts, on_choice)
-end
+end)

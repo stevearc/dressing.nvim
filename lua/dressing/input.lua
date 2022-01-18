@@ -160,7 +160,9 @@ M.trigger_completion = function()
 end
 
 setmetatable(M, {
-  __call = function(_, opts, on_confirm)
+  -- use schedule_wrap to avoid a bug when vim opens
+  -- (see https://github.com/stevearc/dressing.nvim/issues/15)
+  __call = vim.schedule_wrap(function(_, opts, on_confirm)
     vim.validate({
       on_confirm = { on_confirm, "function", false },
     })
@@ -284,7 +286,7 @@ setmetatable(M, {
     vim.cmd("startinsert!")
     close_completion_window()
     M.highlight()
-  end,
+  end),
 })
 
 return M
