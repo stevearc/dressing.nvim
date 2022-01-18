@@ -117,6 +117,9 @@ want to tweak, call this function:
 ```lua
 require('dressing').setup({
   input = {
+    -- Set to false to disable the vim.ui.input implementation
+    enabled = true,
+
     -- Default prompt string
     default_prompt = "➤ ",
 
@@ -144,6 +147,9 @@ require('dressing').setup({
     get_config = nil,
   },
   select = {
+    -- Set to false to disable the vim.ui.select implementation
+    enabled = true,
+
     -- Priority list of preferred vim.select implementations
     backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
 
