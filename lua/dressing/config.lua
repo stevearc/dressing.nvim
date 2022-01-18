@@ -1,5 +1,8 @@
 local default_config = {
   input = {
+    -- Set to false to disable the vim.ui.input implementation
+    enabled = true,
+
     -- Default prompt string
     default_prompt = "➤ ",
 
@@ -27,6 +30,9 @@ local default_config = {
     get_config = nil,
   },
   select = {
+    -- Set to false to disable the vim.ui.select implementation
+    enabled = true,
+
     -- Priority list of preferred vim.select implementations
     backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
 
