@@ -18,6 +18,9 @@ end
 local history = {}
 M.history_prev = function()
   if context.history_idx == nil then
+    if #history == 0 then
+      return
+    end
     context.history_tip = vim.api.nvim_buf_get_lines(0, 0, 1, true)[1]
     context.history_idx = #history
   elseif context.history_idx == 1 then
