@@ -47,63 +47,62 @@ local winid_map = {}
 M.add_title_to_win = function(winid, title, opts)
   opts = opts or {}
   opts.align = opts.align or "center"
-  -- Create the title window once the main window is placed.
-  -- Have to defer here or the title will be in the wrong location
-  vim.defer_fn(function()
-    if not vim.api.nvim_win_is_valid(winid) then
-      return
-    end
-    local width = math.min(vim.api.nvim_win_get_width(winid) - 4, 2 + vim.api.nvim_strwidth(title))
-    local title_winid = winid_map[winid]
-    local bufnr
-    if title_winid and vim.api.nvim_win_is_valid(title_winid) then
-      vim.api.nvim_win_set_width(title_winid, width)
-      bufnr = vim.api.nvim_win_get_buf(title_winid)
-    else
-      bufnr = vim.api.nvim_create_buf(false, true)
-      local col = 1
-      if opts.align == "center" then
-        col = math.floor((vim.api.nvim_win_get_width(winid) - width) / 2)
-      elseif opts.align == "right" then
-        col = vim.api.nvim_win_get_width(winid) - 1 - width
-      elseif opts.align ~= "left" then
-        vim.notify(
-          string.format("Unknown dressing window title alignment: '%s'", opts.align),
-          vim.log.levels.ERROR
-        )
-      end
-      title_winid = vim.api.nvim_open_win(bufnr, false, {
-        relative = "win",
-        win = winid,
-        width = width,
-        height = 1,
-        row = -1,
-        col = col,
-        focusable = false,
-        zindex = 151,
-        style = "minimal",
-        noautocmd = true,
-      })
-      winid_map[winid] = title_winid
-      vim.api.nvim_win_set_option(
-        title_winid,
-        "winblend",
-        vim.api.nvim_win_get_option(winid, "winblend")
+  if not vim.api.nvim_win_is_valid(winid) then
+    return
+  end
+  -- HACK to force the parent window to position itself
+  -- See https://github.com/neovim/neovim/issues/13403
+  vim.cmd("redraw")
+  local width = math.min(vim.api.nvim_win_get_width(winid) - 4, 2 + vim.api.nvim_strwidth(title))
+  local title_winid = winid_map[winid]
+  local bufnr
+  if title_winid and vim.api.nvim_win_is_valid(title_winid) then
+    vim.api.nvim_win_set_width(title_winid, width)
+    bufnr = vim.api.nvim_win_get_buf(title_winid)
+  else
+    bufnr = vim.api.nvim_create_buf(false, true)
+    local col = 1
+    if opts.align == "center" then
+      col = math.floor((vim.api.nvim_win_get_width(winid) - width) / 2)
+    elseif opts.align == "right" then
+      col = vim.api.nvim_win_get_width(winid) - 1 - width
+    elseif opts.align ~= "left" then
+      vim.notify(
+        string.format("Unknown dressing window title alignment: '%s'", opts.align),
+        vim.log.levels.ERROR
       )
-      vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
-      vim.cmd(string.format(
-        [[
+    end
+    title_winid = vim.api.nvim_open_win(bufnr, false, {
+      relative = "win",
+      win = winid,
+      width = width,
+      height = 1,
+      row = -1,
+      col = col,
+      focusable = false,
+      zindex = 151,
+      style = "minimal",
+      noautocmd = true,
+    })
+    winid_map[winid] = title_winid
+    vim.api.nvim_win_set_option(
+      title_winid,
+      "winblend",
+      vim.api.nvim_win_get_option(winid, "winblend")
+    )
+    vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+    vim.cmd(string.format(
+      [[
       autocmd WinClosed %d ++once lua require('dressing.util')._on_win_closed(%d)
     ]],
-        winid,
-        winid
-      ))
-    end
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { " " .. title .. " " })
-    local ns = vim.api.nvim_create_namespace("DressingWindow")
-    vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
-    vim.api.nvim_buf_add_highlight(bufnr, ns, "FloatTitle", 0, 0, -1)
-  end, 10)
+      winid,
+      winid
+    ))
+  end
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { " " .. title .. " " })
+  local ns = vim.api.nvim_create_namespace("DressingWindow")
+  vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
+  vim.api.nvim_buf_add_highlight(bufnr, ns, "FloatTitle", 0, 0, -1)
 end
 
 M._on_win_closed = function(winid)
