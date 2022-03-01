@@ -24,7 +24,7 @@ M.select = function(config, items, opts, on_choice)
   end
 
   local picker_opts = type(config.theme) == "table"
-    and vim.tbl_extend("force", config.theme, defaults)
+      and vim.tbl_extend("force", config.theme, defaults)
     or themes[string.format("get_%s", config.theme)](defaults)
 
   pickers.new(picker_opts, {

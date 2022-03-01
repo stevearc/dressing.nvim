@@ -156,6 +156,8 @@ require('dressing').setup({
     -- Options for telescope selector
     telescope = {
       -- can be 'dropdown', 'cursor', or 'ivy'
+      -- or you can use a configuration directly:
+      -- theme = require('telescope.themes').get_ivy({...})
       theme = "dropdown",
     },
 

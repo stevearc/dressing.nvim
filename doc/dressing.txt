@@ -46,6 +46,8 @@ Configure dressing.nvim by calling the setup() function.
         -- Options for telescope selector
         telescope = {
           -- can be 'dropdown', 'cursor', or 'ivy'
+          -- or you can use a configuration directly:
+          -- theme = require('telescope.themes').get_ivy({...})
           theme = "dropdown",
         },
     
