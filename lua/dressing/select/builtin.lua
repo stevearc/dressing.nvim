@@ -31,18 +31,22 @@ M.select = function(config, items, opts, on_choice)
   for i = 0, #lines - 1, 1 do
     vim.api.nvim_buf_add_highlight(bufnr, ns, "DressingSelectText", i, 0, -1)
   end
-  local width = util.calculate_width(max_width, config)
+  local width = util.calculate_width(config.relative, max_width, config, 0)
+  local height = util.calculate_height(config.relative, #lines, config, 0)
+  local row = util.calculate_row(config.relative, height, 0)
+  local col = util.calculate_col(config.relative, width, 0)
   local winopt = {
     relative = config.relative,
     anchor = config.anchor,
-    row = config.row,
-    col = config.col,
+    row = row,
+    col = col,
     border = config.border,
     width = width,
-    height = util.calculate_height(#lines, config),
+    height = height,
     zindex = 150,
     style = "minimal",
   }
+  winopt = config.override(winopt) or winopt
   local winnr = vim.api.nvim_open_win(bufnr, true, winopt)
   vim.api.nvim_win_set_option(winnr, "winblend", config.winblend)
   vim.api.nvim_win_set_option(winnr, "winhighlight", config.winhighlight)

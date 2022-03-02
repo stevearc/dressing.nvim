@@ -11,20 +11,28 @@ local default_config = {
 
     -- These are passed to nvim_open_win
     anchor = "SW",
-    relative = "cursor",
-    row = 0,
-    col = 0,
     border = "rounded",
+    -- 'editor' and 'win' will default to being centered
+    relative = "cursor",
 
     -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
     prefer_width = 40,
-    max_width = nil,
-    min_width = 20,
+    width = nil,
+    -- min_width and max_width can be a list of mixed types.
+    -- min_width = {20, 0.2} means "the greater of 20 columns or 20% of total"
+    max_width = { 140, 0.9 },
+    min_width = { 20, 0.2 },
 
     -- Window transparency (0-100)
     winblend = 10,
     -- Change default highlight groups (see :help winhl)
     winhighlight = "",
+
+    override = function(conf)
+      -- This is the config that will be passed to nvim_open_win.
+      -- Change values here to customize the layout
+      return conf
+    end,
 
     -- see :help dressing_get_config
     get_config = nil,
@@ -76,10 +84,9 @@ local default_config = {
     builtin = {
       -- These are passed to nvim_open_win
       anchor = "NW",
-      relative = "cursor",
-      row = 0,
-      col = 0,
       border = "rounded",
+      -- 'editor' and 'win' will default to being centered
+      relative = "editor",
 
       -- Window transparency (0-100)
       winblend = 10,
@@ -87,12 +94,20 @@ local default_config = {
       winhighlight = "",
 
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+      -- the min_ and max_ options can be a list of mixed types.
+      -- max_width = {140, 0.8} means "the lesser of 140 columns or 80% of total"
       width = nil,
-      max_width = 0.8,
-      min_width = 40,
+      max_width = { 140, 0.8 },
+      min_width = { 40, 0.2 },
       height = nil,
       max_height = 0.9,
-      min_height = 10,
+      min_height = { 10, 0.2 },
+
+      override = function(conf)
+        -- This is the config that will be passed to nvim_open_win.
+        -- Change values here to customize the layout
+        return conf
+      end,
     },
 
     -- Used to override format_item. See :help dressing-format
@@ -107,6 +122,19 @@ local M = vim.deepcopy(default_config)
 
 M.update = function(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
+
+  if
+    newconf.input.row
+    or newconf.input.col
+    or newconf.select.builtin.row
+    or newconf.select.builtin.col
+  then
+    vim.notify(
+      "Deprecated: Dressing row and col are no longer used. Use the override to customize layout (:help dressing)",
+      vim.log.levels.WARN
+    )
+  end
+
   for k, v in pairs(newconf) do
     M[k] = v
   end
