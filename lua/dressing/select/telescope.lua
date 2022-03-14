@@ -5,11 +5,11 @@ M.is_supported = function()
 end
 
 M.select = function(config, items, opts, on_choice)
-  local themes = require("telescope.themes")
-  local actions = require("telescope.actions")
-  local state = require("telescope.actions.state")
-  local pickers = require("telescope.pickers")
-  local finders = require("telescope.finders")
+  local themes = require "telescope.themes"
+  local actions = require "telescope.actions"
+  local state = require "telescope.actions.state"
+  local pickers = require "telescope.pickers"
+  local finders = require "telescope.finders"
   local conf = require("telescope.config").values
 
   local entry_maker = function(item)
@@ -21,15 +21,25 @@ M.select = function(config, items, opts, on_choice)
     }
   end
 
-  local picker_opts = themes[string.format("get_%s", config.theme)]({
-    previewer = false,
-  })
+  local theme, ttype = nil, type(config.theme)
+  if ttype == "string" then
+    theme = themes[string.format("get_%s", config.theme)]()
+  elseif ttype == "function" then
+    theme = config.theme
+  else
+    theme = function(s)
+      return s
+    end
+  end
+
+  local picker_opts = vim.tbl_extend("keep", config, theme { previewer = false })
+
   pickers.new(picker_opts, {
     prompt_title = opts.prompt,
-    finder = finders.new_table({
+    finder = finders.new_table {
       results = items,
       entry_maker = entry_maker,
-    }),
+    },
     sorter = conf.generic_sorter(opts),
     attach_mappings = function(prompt_bufnr)
       actions.select_default:replace(function()
