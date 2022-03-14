@@ -162,6 +162,74 @@ M.trigger_completion = function()
   end
 end
 
+local function create_or_update_win(config, prompt, opts)
+  local parent_win = 0
+  local winopt
+  local win_conf
+  -- If the previous window is still open and valid, we're going to update it
+  if context.winid and vim.api.nvim_win_is_valid(context.winid) then
+    win_conf = vim.api.nvim_win_get_config(context.winid)
+    parent_win = win_conf.win
+    winopt = {
+      relative = win_conf.relative,
+      win = win_conf.win,
+    }
+  else
+    winopt = {
+      relative = config.relative,
+      anchor = config.anchor,
+      border = config.border,
+      height = 1,
+      style = "minimal",
+      noautocmd = true,
+    }
+  end
+  -- First calculate the desired base width of the modal
+  local prefer_width = util.calculate_width(
+    config.relative,
+    config.prefer_width,
+    config,
+    parent_win
+  )
+  -- Then expand the width to fit the prompt and default value
+  prefer_width = math.max(prefer_width, 4 + vim.api.nvim_strwidth(prompt))
+  if opts.default then
+    prefer_width = math.max(prefer_width, 2 + vim.api.nvim_strwidth(opts.default))
+  end
+  -- Then recalculate to clamp final value to min/max
+  local width = util.calculate_width(config.relative, prefer_width, config, parent_win)
+  winopt.row = util.calculate_row(config.relative, 1, parent_win)
+  winopt.col = util.calculate_col(config.relative, width, parent_win)
+  winopt.width = width
+
+  if win_conf and config.relative == "cursor" then
+    -- If we're cursor-relative we should actually not adjust the row/col to
+    -- prevent jumping. Also remove related args.
+    if config.relative == "cursor" then
+      winopt.row = nil
+      winopt.col = nil
+      winopt.relative = nil
+      winopt.win = nil
+    end
+  end
+
+  winopt = config.override(winopt) or winopt
+
+  -- If the floating win was already open
+  if win_conf then
+    -- Make sure the previous on_confirm callback is called with nil
+    vim.schedule(context.on_confirm)
+    vim.api.nvim_win_set_config(context.winid, winopt)
+    local start_in_insert = context.start_in_insert
+    return context.winid, start_in_insert
+  else
+    local start_in_insert = string.sub(vim.api.nvim_get_mode().mode, 1, 1) == "i"
+    local bufnr = vim.api.nvim_create_buf(false, true)
+    local winid = vim.api.nvim_open_win(bufnr, true, winopt)
+    return winid, start_in_insert
+  end
+end
+
 setmetatable(M, {
   -- use schedule_wrap to avoid a bug when vim opens
   -- (see https://github.com/stevearc/dressing.nvim/issues/15)
@@ -178,40 +246,7 @@ setmetatable(M, {
     -- Create or update the window
     local prompt = opts.prompt or config.default_prompt
 
-    -- First calculate the desired base width of the modal
-    local prefer_width = util.calculate_width(config.prefer_width, config)
-    -- Then expand the width to fit the prompt and default value
-    prefer_width = math.max(prefer_width, 4 + vim.api.nvim_strwidth(prompt))
-    if opts.default then
-      prefer_width = math.max(prefer_width, 2 + vim.api.nvim_strwidth(opts.default))
-    end
-    -- Then recalculate to clamp final value to min/max
-    local width = util.calculate_width(prefer_width, config)
-    local winopt = {
-      relative = config.relative,
-      anchor = config.anchor,
-      row = config.row,
-      col = config.col,
-      border = config.border,
-      width = width,
-      height = 1,
-      style = "minimal",
-      noautocmd = true,
-    }
-    local winid, bufnr, start_in_insert
-    -- If the input window is already open, hijack it
-    if context.winid and vim.api.nvim_win_is_valid(context.winid) then
-      winid = context.winid
-      -- Make sure the previous on_confirm callback is called with nil
-      vim.schedule(context.on_confirm)
-      vim.api.nvim_win_set_width(winid, width)
-      bufnr = vim.api.nvim_win_get_buf(winid)
-      start_in_insert = context.start_in_insert
-    else
-      start_in_insert = string.sub(vim.api.nvim_get_mode().mode, 1, 1) == "i"
-      bufnr = vim.api.nvim_create_buf(false, true)
-      winid = vim.api.nvim_open_win(bufnr, true, winopt)
-    end
+    local winid, start_in_insert = create_or_update_win(config, prompt, opts)
     context = {
       winid = winid,
       on_confirm = on_confirm,
@@ -221,6 +256,7 @@ setmetatable(M, {
     }
     vim.api.nvim_win_set_option(winid, "winblend", config.winblend)
     vim.api.nvim_win_set_option(winid, "winhighlight", config.winhighlight)
+    local bufnr = vim.api.nvim_win_get_buf(winid)
 
     -- Finish setting up the buffer
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)

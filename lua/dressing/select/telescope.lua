@@ -4,6 +4,8 @@ M.is_supported = function()
   return pcall(require, "telescope")
 end
 
+local defaults = { previewer = false }
+
 M.select = function(config, items, opts, on_choice)
   local themes = require "telescope.themes"
   local actions = require "telescope.actions"
@@ -33,6 +35,7 @@ M.select = function(config, items, opts, on_choice)
   end
 
   local picker_opts = vim.tbl_extend("keep", config, theme { previewer = false })
+
 
   pickers.new(picker_opts, {
     prompt_title = opts.prompt,

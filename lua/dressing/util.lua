@@ -13,33 +13,84 @@ local function calc_float(value, max_value)
   end
 end
 
+local function calc_list(values, max_value, aggregator, limit)
+  local ret = limit
+  if type(values) == "table" then
+    for _, v in ipairs(values) do
+      ret = aggregator(ret, calc_float(v, max_value))
+    end
+    return ret
+  else
+    ret = aggregator(ret, calc_float(values, max_value))
+  end
+  return ret
+end
+
 local function calculate_dim(desired_size, size, min_size, max_size, total_size)
   local ret = calc_float(size, total_size)
+  local min_val = calc_list(min_size, total_size, math.max, 1)
+  local max_val = calc_list(max_size, total_size, math.min, total_size)
   if not ret then
-    ret = calc_float(desired_size, total_size)
+    if not desired_size then
+      ret = (min_val + max_val) / 2
+    else
+      ret = calc_float(desired_size, total_size)
+    end
   end
-  ret = math.min(ret, calc_float(max_size, total_size) or total_size)
-  ret = math.max(ret, calc_float(min_size, total_size) or 1)
+  ret = math.min(ret, max_val)
+  ret = math.max(ret, min_val)
   return math.floor(ret)
 end
 
-M.calculate_width = function(desired_width, config)
+local function get_max_width(relative, winid)
+  if relative == "editor" then
+    return vim.o.columns
+  else
+    return vim.api.nvim_win_get_width(winid or 0)
+  end
+end
+
+local function get_max_height(relative, winid)
+  if relative == "editor" then
+    return vim.o.lines - vim.o.cmdheight
+  else
+    return vim.api.nvim_win_get_height(winid or 0)
+  end
+end
+
+M.calculate_col = function(relative, width, winid)
+  if relative == "cursor" then
+    return 1
+  else
+    return math.floor((get_max_width(relative, winid) - width) / 2)
+  end
+end
+
+M.calculate_row = function(relative, height, winid)
+  if relative == "cursor" then
+    return 1
+  else
+    return math.floor((get_max_height(relative, winid) - height) / 2)
+  end
+end
+
+M.calculate_width = function(relative, desired_width, config, winid)
   return calculate_dim(
     desired_width,
     config.width,
     config.min_width,
     config.max_width,
-    vim.o.columns
+    get_max_width(relative, winid)
   )
 end
 
-M.calculate_height = function(desired_height, config)
+M.calculate_height = function(relative, desired_height, config, winid)
   return calculate_dim(
     desired_height,
     config.height,
     config.min_height,
     config.max_height,
-    vim.o.lines - vim.o.cmdheight
+    get_max_height(relative, winid)
   )
 end
 
