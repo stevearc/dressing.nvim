@@ -25,12 +25,12 @@ M.select = function(config, items, opts, on_choice)
 
   local theme, ttype = nil, type(config.theme)
   if ttype == "string" then
-    theme = themes[string.format("get_%s", config.theme)]()
+    theme = themes[string.format("get_%s", config.theme)]
   elseif ttype == "function" then
     theme = config.theme
   else
     theme = function(s)
-      return s
+      return vim.tbl_extend("keep", s, config.theme or {})
     end
   end
 
