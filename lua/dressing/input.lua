@@ -265,12 +265,13 @@ setmetatable(M, {
     local keyopts = { silent = true, noremap = true }
     local close_rhs = "<cmd>lua require('dressing.input').close()<CR>"
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", close_rhs, keyopts)
+    vim.api.nvim_buf_set_keymap(bufnr, "n", "<C-c>", close_rhs, keyopts)
     if config.insert_only then
       vim.api.nvim_buf_set_keymap(bufnr, "i", "<Esc>", close_rhs, keyopts)
+      vim.api.nvim_buf_set_keymap(bufnr, "i", "<C-c>", close_rhs, keyopts)
     end
 
     local confirm_rhs = "<cmd>lua require('dressing.input').confirm()<CR>"
-    vim.api.nvim_buf_set_keymap(bufnr, "i", "<C-c>", close_rhs, keyopts)
     vim.api.nvim_buf_set_keymap(bufnr, "i", "<CR>", confirm_rhs, keyopts)
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<CR>", confirm_rhs, keyopts)
     vim.api.nvim_buf_set_keymap(
