@@ -52,12 +52,9 @@ Configure dressing.nvim by calling the setup() function.
         backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
     
         -- Options for telescope selector
-        telescope = {
-          -- can be 'dropdown', 'cursor', or 'ivy'
-          -- or you can use a configuration directly:
-          -- theme = require('telescope.themes').get_ivy({...})
-          theme = "dropdown",
-        },
+        -- These are passed into the telescope picker directly. Can be used like:
+        -- telescope = require('telescope.themes').get_ivy({...})
+        telescope = nil,
     
         -- Options for fzf selector
         fzf = {
