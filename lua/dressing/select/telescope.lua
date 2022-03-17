@@ -4,8 +4,6 @@ M.is_supported = function()
   return pcall(require, "telescope")
 end
 
-local defaults = { previewer = false }
-
 M.select = function(config, items, opts, on_choice)
   local themes = require("telescope.themes")
   local actions = require("telescope.actions")
@@ -23,7 +21,8 @@ M.select = function(config, items, opts, on_choice)
     }
   end
 
-  local theme, ttype = nil, type(config.theme)
+  local theme
+  local ttype = type(config.theme)
   if ttype == "string" then
     theme = themes[string.format("get_%s", config.theme)]
   elseif ttype == "function" then
@@ -34,11 +33,11 @@ M.select = function(config, items, opts, on_choice)
     end
   end
 
-  local picker_opts = vim.tbl_extend("keep", config, theme({ previewer = false }))
-
+  local picker_opts = vim.tbl_extend("keep", config, theme({}))
 
   pickers.new(picker_opts, {
     prompt_title = opts.prompt,
+    previewer = false,
     finder = finders.new_table({
       results = items,
       entry_maker = entry_maker,
