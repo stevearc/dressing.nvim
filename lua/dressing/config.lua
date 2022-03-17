@@ -45,12 +45,9 @@ local default_config = {
     backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
 
     -- Options for telescope selector
-    telescope = {
-      -- can be 'dropdown', 'cursor', or 'ivy'
-      -- or you can use a configuration directly:
-      -- theme = require('telescope.themes').get_ivy({...})
-      theme = "dropdown",
-    },
+    -- These are passed into the telescope picker directly. Can be used like:
+    -- telescope = require('telescope.themes').get_ivy({...})
+    telescope = nil,
 
     -- Options for fzf selector
     fzf = {
@@ -131,6 +128,13 @@ M.update = function(opts)
   then
     vim.notify(
       "Deprecated: Dressing row and col are no longer used. Use the override to customize layout (:help dressing)",
+      vim.log.levels.WARN
+    )
+  end
+
+  if newconf.select.telescope and newconf.select.telescope.theme then
+    vim.notify(
+      "Deprecated: dressing.select.telescope.theme is deprecated. Pass in telescope options directly (:help dressing)",
       vim.log.levels.WARN
     )
   end
