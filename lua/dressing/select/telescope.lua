@@ -23,24 +23,9 @@ M.select = function(config, items, opts, on_choice)
 
   local picker_opts = config
 
+  -- Default to the dropdown theme if no options supplied
   if picker_opts == nil then
-    -- Default to the dropdown theme if no options supplied
     picker_opts = themes.get_dropdown()
-  elseif config.theme then
-    -- Backwards compatibility for the `theme` option
-    local theme
-    local ttype = type(config.theme)
-    if ttype == "string" then
-      theme = themes[string.format("get_%s", config.theme)]
-    elseif ttype == "function" then
-      theme = config.theme
-    else
-      theme = function(s)
-        return vim.tbl_extend("keep", s, config.theme or {})
-      end
-    end
-
-    picker_opts = vim.tbl_extend("keep", config, theme({}))
   end
 
   pickers.new(picker_opts, {

@@ -132,11 +132,24 @@ M.update = function(opts)
     )
   end
 
-  if newconf.select.telescope and newconf.select.telescope.theme then
+  if
+    newconf.select.telescope
+    and newconf.select.telescope.theme
+    and vim.tbl_count(newconf.select.telescope) == 1
+  then
     vim.notify(
       "Deprecated: dressing.select.telescope.theme is deprecated. Pass in telescope options directly (:help dressing)",
       vim.log.levels.WARN
     )
+    local theme = newconf.select.telescope.theme
+    local ttype = type(theme)
+    if ttype == "string" then
+      newconf.select.telescope = require("telescope.themes")[string.format("get_%s", theme)]()
+    elseif ttype == "function" then
+      newconf.select.telescope = theme({})
+    else
+      newconf.select.telescope = theme
+    end
   end
 
   for k, v in pairs(newconf) do
