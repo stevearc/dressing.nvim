@@ -261,7 +261,6 @@ setmetatable(M, {
     -- Finish setting up the buffer
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
     vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
-    vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     local keyopts = { silent = true, noremap = true }
     local close_rhs = "<cmd>lua require('dressing.input').close()<CR>"
     vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", close_rhs, keyopts)
@@ -287,6 +286,7 @@ setmetatable(M, {
       "<cmd>lua require('dressing.input').history_next()<CR>",
       keyopts
     )
+    vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
     -- Disable nvim-cmp if installed
     local ok, cmp = pcall(require, "cmp")
