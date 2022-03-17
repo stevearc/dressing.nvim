@@ -23,9 +23,19 @@ M.select = function(config, items, opts, on_choice)
     }
   end
 
-  local picker_opts = type(config.theme) == "table"
-      and vim.tbl_extend("force", config.theme, defaults)
-    or themes[string.format("get_%s", config.theme)](defaults)
+  local theme, ttype = nil, type(config.theme)
+  if ttype == "string" then
+    theme = themes[string.format("get_%s", config.theme)]
+  elseif ttype == "function" then
+    theme = config.theme
+  else
+    theme = function(s)
+      return vim.tbl_extend("keep", s, config.theme or {})
+    end
+  end
+
+  local picker_opts = vim.tbl_extend("keep", config, theme({ previewer = false }))
+
 
   pickers.new(picker_opts, {
     prompt_title = opts.prompt,
