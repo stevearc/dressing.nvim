@@ -256,6 +256,7 @@ setmetatable(M, {
     }
     vim.api.nvim_win_set_option(winid, "winblend", config.winblend)
     vim.api.nvim_win_set_option(winid, "winhighlight", config.winhighlight)
+    vim.api.nvim_win_set_option(winid, "wrap", false)
     local bufnr = vim.api.nvim_win_get_buf(winid)
 
     -- Finish setting up the buffer
