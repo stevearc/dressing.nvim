@@ -6,6 +6,9 @@ local default_config = {
     -- Default prompt string
     default_prompt = "➤ ",
 
+    -- Can be 'left', 'right', or 'center'
+    prompt_align = "left",
+
     -- When true, <Esc> will close the modal
     insert_only = true,
 

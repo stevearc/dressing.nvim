@@ -293,7 +293,11 @@ setmetatable(M, {
     if ok then
       cmp.setup.buffer({ enabled = false })
     end
-    util.add_title_to_win(winid, string.gsub(prompt, "^%s*(.-)%s*$", "%1"), { align = "left" })
+    util.add_title_to_win(
+      winid,
+      string.gsub(prompt, "^%s*(.-)%s*$", "%1"),
+      { align = config.prompt_align }
+    )
 
     vim.cmd([[
       aug DressingHighlight
