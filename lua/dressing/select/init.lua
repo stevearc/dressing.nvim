@@ -1,4 +1,5 @@
 local global_config = require("dressing.config")
+local patch = require("dressing.patch")
 
 local function get_backend(config)
   local backends = config.backend
@@ -29,6 +30,11 @@ return vim.schedule_wrap(function(items, opts, on_choice)
   })
   opts = opts or {}
   local config = global_config.get_mod_config("select", opts)
+
+  if not config.enabled then
+    return patch.original_mods.input(items, opts, on_choice)
+  end
+
   opts.prompt = opts.prompt or "Select one of:"
   local format_override = config.format_item_override[opts.kind]
   if format_override then

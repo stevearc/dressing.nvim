@@ -1,4 +1,5 @@
 local global_config = require("dressing.config")
+local patch = require("dressing.patch")
 local util = require("dressing.util")
 local M = {}
 
@@ -242,6 +243,9 @@ setmetatable(M, {
       opts = { prompt = tostring(opts) }
     end
     local config = global_config.get_mod_config("input", opts)
+    if not config.enabled then
+      return patch.original_mods.input(opts, on_confirm)
+    end
 
     -- Create or update the window
     local prompt = opts.prompt or config.default_prompt
