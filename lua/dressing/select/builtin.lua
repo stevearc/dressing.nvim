@@ -13,6 +13,12 @@ local function clear_callback()
 end
 
 M.select = function(config, items, opts, on_choice)
+  if vim.fn.hlID("DressingSelectText") ~= 0 then
+    vim.notify(
+      'DressingSelectText highlight group is deprecated. Set winhighlight="NormalFloat:MyHighlightGroup" instead',
+      vim.log.levels.WARN
+    )
+  end
   _callback = on_choice
   _items = items
   local bufnr = vim.api.nvim_create_buf(false, true)
@@ -27,10 +33,6 @@ M.select = function(config, items, opts, on_choice)
   end
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
   vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
-  local ns = vim.api.nvim_create_namespace("DressingWindow")
-  for i = 0, #lines - 1, 1 do
-    vim.api.nvim_buf_add_highlight(bufnr, ns, "DressingSelectText", i, 0, -1)
-  end
   local width = util.calculate_width(config.relative, max_width, config, 0)
   local height = util.calculate_height(config.relative, #lines, config, 0)
   local row = util.calculate_row(config.relative, height, 0)

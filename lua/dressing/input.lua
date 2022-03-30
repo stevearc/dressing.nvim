@@ -98,12 +98,10 @@ M.highlight = function()
   local opts = context.opts
   local text = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
   local ns = vim.api.nvim_create_namespace("DressingHighlight")
-  local highlights
-  if not opts.highlight then
-    highlights = { { 0, -1, "DressingInputText" } }
-  elseif type(opts.highlight) == "function" then
+  local highlights = {}
+  if type(opts.highlight) == "function" then
     highlights = opts.highlight(text)
-  else
+  elseif opts.highlight then
     highlights = vim.fn[opts.highlight](text)
   end
   vim.api.nvim_buf_clear_namespace(bufnr, ns, 0, -1)
@@ -245,6 +243,12 @@ setmetatable(M, {
     local config = global_config.get_mod_config("input", opts)
     if not config.enabled then
       return patch.original_mods.input(opts, on_confirm)
+    end
+    if vim.fn.hlID("DressingInputText") ~= 0 then
+      vim.notify(
+        'DressingInputText highlight group is deprecated. Set winhighlight="NormalFloat:MyHighlightGroup" instead',
+        vim.log.levels.WARN
+      )
     end
 
     -- Create or update the window
