@@ -4,7 +4,7 @@ local default_config = {
     enabled = true,
 
     -- Default prompt string
-    default_prompt = "➤ ",
+    default_prompt = "Input:",
 
     -- Can be 'left', 'right', or 'center'
     prompt_align = "left",
