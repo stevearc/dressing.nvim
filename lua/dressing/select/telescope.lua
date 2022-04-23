@@ -39,10 +39,13 @@ M.select = function(config, items, opts, on_choice)
     attach_mappings = function(prompt_bufnr)
       actions.select_default:replace(function()
         local selection = state.get_selected_entry()
-        actions._close(prompt_bufnr, false)
+        local callback = on_choice
+        -- Replace on_choice with a no-op so closing doesn't trigger it
+        on_choice = function() end
+        actions.close(prompt_bufnr)
         if not selection then
           -- User did not select anything.
-          on_choice(nil, nil)
+          callback(nil, nil)
           return
         end
         local idx = nil
@@ -52,13 +55,14 @@ M.select = function(config, items, opts, on_choice)
             break
           end
         end
-        on_choice(selection.value, idx)
+        callback(selection.value, idx)
       end)
 
-      actions.close:replace(function()
-        actions._close(prompt_bufnr, false)
-        on_choice(nil, nil)
-      end)
+      actions.close:enhance({
+        post = function()
+          on_choice(nil, nil)
+        end,
+      })
 
       return true
     end,
