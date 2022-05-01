@@ -302,6 +302,8 @@ setmetatable(M, {
     if ok then
       cmp.setup.buffer({ enabled = false })
     end
+    -- Disable mini.nvim completion if installed
+    vim.api.nvim_buf_set_var(bufnr, "minicompletion_disable", true)
     util.add_title_to_win(
       winid,
       string.gsub(prompt, "^%s*(.-)%s*$", "%1"),
