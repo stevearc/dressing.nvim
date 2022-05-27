@@ -4,6 +4,40 @@ M.is_supported = function()
   return pcall(require, "telescope")
 end
 
+M.custom_kind = {
+  codeaction = function(opts, defaults, items)
+    local entry_display = require("telescope.pickers.entry_display")
+    local finders = require("telescope.finders")
+    local displayer = entry_display.create({
+      separator = " ",
+      items = {
+        { remaining = true },
+        { width = 16 },
+      },
+    })
+
+    local function make_display(entry)
+      local client_name = vim.lsp.get_client_by_id(entry.client_id).name
+      local columns = {
+        opts.format_item(entry.value),
+        { client_name, "Comment" },
+      }
+      return displayer(columns)
+    end
+    defaults.finder = finders.new_table({
+      results = items,
+      entry_maker = function(item)
+        return {
+          display = make_display,
+          client_id = item[1],
+          ordinal = opts.format_item(item),
+          value = item,
+        }
+      end,
+    })
+  end,
+}
+
 M.select = function(config, items, opts, on_choice)
   local themes = require("telescope.themes")
   local actions = require("telescope.actions")
@@ -67,6 +101,10 @@ M.select = function(config, items, opts, on_choice)
       return true
     end,
   }
+
+  if M.custom_kind[opts.kind] then
+    M.custom_kind[opts.kind](opts, defaults, items)
+  end
 
   -- Hook to allow the caller of vim.ui.select to customize the telescope opts
   if opts.telescope then
