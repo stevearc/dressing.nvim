@@ -28,7 +28,7 @@ M.select = function(config, items, opts, on_choice)
     picker_opts = themes.get_dropdown()
   end
 
-  pickers.new(picker_opts, {
+  local defaults = {
     prompt_title = opts.prompt,
     previewer = false,
     finder = finders.new_table({
@@ -41,7 +41,7 @@ M.select = function(config, items, opts, on_choice)
         local selection = state.get_selected_entry()
         local callback = on_choice
         -- Replace on_choice with a no-op so closing doesn't trigger it
-        on_choice = function() end
+        on_choice = function(_, _) end
         actions.close(prompt_bufnr)
         if not selection then
           -- User did not select anything.
@@ -66,7 +66,14 @@ M.select = function(config, items, opts, on_choice)
 
       return true
     end,
-  }):find()
+  }
+
+  -- Hook to allow the caller of vim.ui.select to customize the telescope opts
+  if opts.telescope then
+    pickers.new(opts.telescope, defaults):find()
+  else
+    pickers.new(picker_opts, defaults):find()
+  end
 end
 
 return M

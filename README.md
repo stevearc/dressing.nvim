@@ -16,6 +16,7 @@ options in the functions. Customization will be done entirely using a separate
 - [Installation](#installation)
 - [Configuration](#configuration)
 - [Advanced configuration](#advanced-configuration)
+- [Notes for plugin authors](#notes-for-plugin-authors)
 - [Alternative and related projects](#alternative-and-related-projects)
 
 ## Requirements
@@ -264,6 +265,35 @@ require('dressing').setup({
 })
 
 ```
+
+## Notes for plugin authors
+
+TL;DR: you can customize the telescope `vim.ui.select` implementation by passing `telescope` into `opts`.
+
+The `vim.ui` hooks are a great boon for us because we can now assume that users
+will have a reasonable UI available for simple input operations. We no longer
+have to build separate implementations for each of fzf, telescope, ctrlp, etc.
+The tradeoff is that `vim.ui.select` is less customizable than any of these
+options, so if you wanted to have a preview window (like telescope supports), it
+is no longer an option.
+
+My solution to this is extending the `opts` that are passed to `vim.ui.select`.
+You can add a `telescope` field that will be passed directly into the picker,
+allowing you to customize any part of the UI. If a user has both dressing and
+telescope installed, they will get your custom picker UI. If either of those
+are not true, the selection UI will gracefully degrade to whatever the user has
+configured for `vim.ui.select`.
+
+An example of usage:
+
+```lua
+vim.ui.select({'apple', 'banana', 'mango'}, {
+  prompt = "Title",
+  telescope = require("telescope.themes").get_cursor(),
+}, function(selected) end)
+```
+
+For now this is available only for the telescope backend, but feel free to request additions.
 
 ## Alternative and related projects
 
