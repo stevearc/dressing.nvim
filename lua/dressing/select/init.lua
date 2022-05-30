@@ -36,6 +36,10 @@ return vim.schedule_wrap(function(items, opts, on_choice)
   end
 
   opts.prompt = opts.prompt or "Select one of:"
+  if config.trim_prompt and opts.prompt:sub(-1, -1) == ":" then
+    opts.prompt = opts.prompt:sub(1, -2)
+  end
+
   local format_override = config.format_item_override[opts.kind]
   if format_override then
     opts.format_item = format_override
