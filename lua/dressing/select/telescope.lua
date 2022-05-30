@@ -8,31 +8,51 @@ M.custom_kind = {
   codeaction = function(opts, defaults, items)
     local entry_display = require("telescope.pickers.entry_display")
     local finders = require("telescope.finders")
-    local displayer = entry_display.create({
-      separator = " ",
-      items = {
-        { remaining = true },
-        { width = 16 },
-      },
-    })
+    local displayer
 
     local function make_display(entry)
-      local client_name = vim.lsp.get_client_by_id(entry.client_id).name
       local columns = {
-        opts.format_item(entry.value),
-        { client_name, "Comment" },
+        entry.text,
+        { entry.client_name, "Comment" },
       }
       return displayer(columns)
     end
+
+    local entries = {}
+    local client_width = 1
+    local text_width = 1
+    for _, item in ipairs(items) do
+      local client_id = item[1]
+      local client_name = vim.lsp.get_client_by_id(client_id).name
+      local len = vim.api.nvim_strwidth(client_name)
+      if len > client_width then
+        client_width = len
+      end
+      local text = opts.format_item(item)
+      len = vim.api.nvim_strwidth(text)
+      if len > text_width then
+        text_width = len
+      end
+      table.insert(entries, {
+        display = make_display,
+        text = text,
+        client_name = client_name,
+        ordinal = text .. " " .. client_name,
+        value = item,
+      })
+    end
+    displayer = entry_display.create({
+      separator = " ",
+      items = {
+        { width = text_width },
+        { width = client_width },
+      },
+    })
+
     defaults.finder = finders.new_table({
-      results = items,
+      results = entries,
       entry_maker = function(item)
-        return {
-          display = make_display,
-          client_id = item[1],
-          ordinal = opts.format_item(item),
-          value = item,
-        }
+        return item
       end,
     })
   end,
