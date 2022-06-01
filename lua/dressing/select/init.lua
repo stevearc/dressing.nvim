@@ -32,7 +32,7 @@ return vim.schedule_wrap(function(items, opts, on_choice)
   local config = global_config.get_mod_config("select", opts)
 
   if not config.enabled then
-    return patch.original_mods.input(items, opts, on_choice)
+    return patch.original_mods.select(items, opts, on_choice)
   end
 
   opts.prompt = opts.prompt or "Select one of:"
