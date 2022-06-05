@@ -79,8 +79,17 @@ local default_config = {
       border = {
         style = "rounded",
       },
+      buf_options = {
+        swapfile = false,
+        filetype = "DressingSelect",
+      },
+      win_options = {
+        winblend = 10,
+      },
       max_width = 80,
       max_height = 40,
+      min_width = 40,
+      min_height = 10,
     },
 
     -- Options for built-in selector
