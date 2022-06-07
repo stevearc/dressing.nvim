@@ -12,7 +12,7 @@ M.select = function(config, items, opts, on_choice)
   for i, item in ipairs(items) do
     local line = opts.format_item(item)
     line_width = math.max(line_width, vim.api.nvim_strwidth(line))
-    table.insert(lines, Menu.item(item, { value = item, idx = i }))
+    table.insert(lines, Menu.item(line, { value = item, idx = i }))
   end
 
   if not config.size then
