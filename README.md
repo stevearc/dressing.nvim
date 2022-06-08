@@ -15,6 +15,7 @@ options in the functions. Customization will be done entirely using a separate
 - [Screenshots](#screenshots)
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Highlights](#highlights)
 - [Advanced configuration](#advanced-configuration)
 - [Notes for plugin authors](#notes-for-plugin-authors)
 - [Alternative and related projects](#alternative-and-related-projects)
@@ -248,6 +249,21 @@ require('dressing').setup({
   },
 })
 ```
+
+## Highlights
+
+The built-in `vim.ui.input` and `vim.ui.select` components mostly use the
+standard highlight groups for neovim floating windows (e.g. `NormalFloat` for
+the text, `FloatBorder` for the border). In addition, the window title uses a
+non-standard `FloatTitle` group that is linked to `FloatBorder` by default.
+
+A common way to adjust the highlighting of just the dressing windows is by
+providing a `winhighlight` option in the config. For example, `winhighlight = 'NormalFloat:DiagnosticError'`
+would change the default text color in the dressing windows. See `:help winhighlight`
+for more details.
+
+Note that you can't change `FloatTitle` via `winhighlight` since it is not a
+built-in group.
 
 ## Advanced configuration
 
