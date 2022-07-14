@@ -87,7 +87,7 @@ M.confirm = function()
 end
 
 M.close = function()
-  confirm()
+  confirm(context.opts and context.opts.cancelreturn)
 end
 
 M.highlight = function()
