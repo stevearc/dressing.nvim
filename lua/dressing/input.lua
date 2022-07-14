@@ -184,12 +184,8 @@ local function create_or_update_win(config, prompt, opts)
     }
   end
   -- First calculate the desired base width of the modal
-  local prefer_width = util.calculate_width(
-    config.relative,
-    config.prefer_width,
-    config,
-    parent_win
-  )
+  local prefer_width =
+    util.calculate_width(config.relative, config.prefer_width, config, parent_win)
   -- Then expand the width to fit the prompt and default value
   prefer_width = math.max(prefer_width, 4 + vim.api.nvim_strwidth(prompt))
   if opts.default then
