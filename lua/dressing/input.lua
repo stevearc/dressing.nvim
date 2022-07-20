@@ -333,7 +333,9 @@ setmetatable(M, {
       aug END
     ]])
 
-    vim.cmd("startinsert!")
+    if config.start_in_insert then
+      vim.cmd("startinsert!")
+    end
     close_completion_window()
     M.highlight()
   end),
