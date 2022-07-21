@@ -78,6 +78,28 @@ a.describe("input modal", function()
     assert(ret == "my text", string.format("Got '%s' expected 'my text'", ret))
   end)
 
+  a.it("starts in normal mode when start_in_insert = false", function()
+    local orig_cmd = vim.cmd
+    local startinsert_called = false
+    vim.cmd = function(cmd)
+      if cmd == "startinsert!" then
+        startinsert_called = true
+      end
+      orig_cmd(cmd)
+    end
+
+    require("dressing.config").input.start_in_insert = false
+    run_input({
+      "my text",
+      "<CR>",
+    }, {
+      after_fn = function()
+        vim.cmd = orig_cmd
+      end,
+    })
+    assert(not startinsert_called, "Got 'true' expected 'false'")
+  end)
+
   a.it("cancels first callback if second input is opened", function()
     local tx, rx = channel.oneshot()
     vim.ui.input({}, tx)
