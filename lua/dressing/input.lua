@@ -155,9 +155,9 @@ _G.dressing_input_complete = M.completefunc
 
 M.trigger_completion = function()
   if vim.fn.pumvisible() == 1 then
-    return vim.api.nvim_replace_termcodes("<C-n>", true, false, true)
+    return "<C-n>"
   else
-    return vim.api.nvim_replace_termcodes("<C-x><C-u>", true, false, true)
+    return "<C-x><C-u>"
   end
 end
 
@@ -266,31 +266,16 @@ setmetatable(M, {
     -- Finish setting up the buffer
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
     vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
-    local keyopts = { silent = true, noremap = true }
-    local close_rhs = "<cmd>lua require('dressing.input').close()<CR>"
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<Esc>", close_rhs, keyopts)
+    vim.keymap.set("n", "<Esc>", M.close, { buffer = bufnr })
     if config.insert_only then
-      vim.api.nvim_buf_set_keymap(bufnr, "i", "<Esc>", close_rhs, keyopts)
+      vim.keymap.set("i", "<Esc>", M.close, { buffer = bufnr })
     end
 
-    local confirm_rhs = "<cmd>lua require('dressing.input').confirm()<CR>"
-    vim.api.nvim_buf_set_keymap(bufnr, "i", "<C-c>", close_rhs, keyopts)
-    vim.api.nvim_buf_set_keymap(bufnr, "i", "<CR>", confirm_rhs, keyopts)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "<CR>", confirm_rhs, keyopts)
-    vim.api.nvim_buf_set_keymap(
-      bufnr,
-      "i",
-      "<Up>",
-      "<cmd>lua require('dressing.input').history_prev()<CR>",
-      keyopts
-    )
-    vim.api.nvim_buf_set_keymap(
-      bufnr,
-      "i",
-      "<Down>",
-      "<cmd>lua require('dressing.input').history_next()<CR>",
-      keyopts
-    )
+    vim.keymap.set("i", "<C-c>", M.close, { buffer = bufnr })
+    vim.keymap.set("i", "<CR>", M.confirm, { buffer = bufnr })
+    vim.keymap.set("n", "<CR>", M.confirm, { buffer = bufnr })
+    vim.keymap.set("i", "<Up>", M.history_prev, { buffer = bufnr })
+    vim.keymap.set("i", "<Down>", M.history_next, { buffer = bufnr })
     vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
     -- Disable nvim-cmp if installed
@@ -306,32 +291,25 @@ setmetatable(M, {
       { align = config.prompt_align }
     )
 
-    vim.cmd([[
-      aug DressingHighlight
-        autocmd! * <buffer>
-        autocmd TextChanged <buffer> lua require('dressing.input').highlight()
-        autocmd TextChangedI <buffer> lua require('dressing.input').highlight()
-      aug END
-    ]])
+    vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
+      desc = "Update highlights",
+      buffer = bufnr,
+      callback = M.highlight,
+    })
 
     if opts.completion then
       vim.api.nvim_buf_set_option(bufnr, "completefunc", "v:lua.dressing_input_complete")
       vim.api.nvim_buf_set_option(bufnr, "omnifunc", "")
-      vim.api.nvim_buf_set_keymap(
-        bufnr,
-        "i",
-        "<Tab>",
-        [[luaeval("require('dressing.input').trigger_completion()")]],
-        { expr = true }
-      )
+      vim.keymap.set("i", "<Tab>", M.trigger_completion, { buffer = bufnr, expr = true })
     end
 
-    vim.cmd([[
-      aug DressingCloseWin
-        autocmd! * <buffer>
-        autocmd BufLeave <buffer> ++nested ++once lua require('dressing.input').close()
-      aug END
-    ]])
+    vim.api.nvim_create_autocmd("BufLeave", {
+      desc = "Cancel vim.ui.input",
+      buffer = bufnr,
+      nested = true,
+      once = true,
+      callback = M.close,
+    })
 
     if config.start_in_insert then
       vim.cmd("startinsert!")

@@ -57,16 +57,16 @@ M.select = function(config, items, opts, on_choice)
   vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
   util.add_title_to_win(winnr, opts.prompt)
 
-  local function map(lhs, rhs)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", lhs, rhs, { silent = true, noremap = true })
-  end
-
-  map("<CR>", [[<cmd>lua require('dressing.select.builtin').choose()<CR>]])
-  map("<C-c>", [[<cmd>lua require('dressing.select.builtin').cancel()<CR>]])
-  map("<Esc>", [[<cmd>lua require('dressing.select.builtin').cancel()<CR>]])
-  vim.cmd([[
-    autocmd BufLeave <buffer> ++nested ++once lua require('dressing.select.builtin').cancel()
-  ]])
+  vim.keymap.set("n", "<CR>", M.choose, { buffer = bufnr })
+  vim.keymap.set("n", "<C-c>", M.cancel, { buffer = bufnr })
+  vim.keymap.set("n", "<Esc>", M.cancel, { buffer = bufnr })
+  vim.api.nvim_create_autocmd("BufLeave", {
+    desc = "Cancel vim.ui.select",
+    buffer = bufnr,
+    nested = true,
+    once = true,
+    callback = M.cancel,
+  })
 end
 
 local function close_window()
