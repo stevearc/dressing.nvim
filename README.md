@@ -22,9 +22,7 @@ options in the functions. Customization will be done entirely using a separate
 
 ## Requirements
 
-Neovim 0.5+
-
-On versions prior to 0.6, this plugin will act as a polyfill for `vim.ui`
+Neovim 0.7.0+ (for earlier versions, use the [nvim-0.5 branch](https://github.com/stevearc/dressing.nvim/tree/nvim-0.5))
 
 ## Screenshots
 
