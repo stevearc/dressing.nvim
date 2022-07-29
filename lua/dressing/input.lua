@@ -1,3 +1,4 @@
+local map_util = require("dressing.map_util")
 local global_config = require("dressing.config")
 local patch = require("dressing.patch")
 local util = require("dressing.util")
@@ -10,6 +11,37 @@ local context = {
   history_idx = nil,
   history_tip = nil,
   start_in_insert = nil,
+}
+
+local keymaps = {
+  {
+    desc = "Close vim.ui.input without a result",
+    plug = "<Plug>DressingInput:Close",
+    rhs = function()
+      M.close()
+    end,
+  },
+  {
+    desc = "Close vim.ui.input with the current buffer contents",
+    plug = "<Plug>DressingInput:Confirm",
+    rhs = function()
+      M.confirm()
+    end,
+  },
+  {
+    desc = "Show previous vim.ui.input history entry",
+    plug = "<Plug>DressingInput:HistoryPrev",
+    rhs = function()
+      M.history_prev()
+    end,
+  },
+  {
+    desc = "Show next vim.ui.input history entry",
+    plug = "<Plug>DressingInput:HistoryNext",
+    rhs = function()
+      M.history_next()
+    end,
+  },
 }
 
 local function set_input(text)
@@ -266,16 +298,16 @@ setmetatable(M, {
     -- Finish setting up the buffer
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
     vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
-    vim.keymap.set("n", "<Esc>", M.close, { buffer = bufnr })
+
+    map_util.create_plug_maps(bufnr, keymaps)
+    for mode, user_maps in pairs(config.mappings) do
+      map_util.create_maps_to_plug(bufnr, mode, user_maps, "DressingInput:")
+    end
+
     if config.insert_only then
       vim.keymap.set("i", "<Esc>", M.close, { buffer = bufnr })
     end
 
-    vim.keymap.set("i", "<C-c>", M.close, { buffer = bufnr })
-    vim.keymap.set("i", "<CR>", M.confirm, { buffer = bufnr })
-    vim.keymap.set("n", "<CR>", M.confirm, { buffer = bufnr })
-    vim.keymap.set("i", "<Up>", M.history_prev, { buffer = bufnr })
-    vim.keymap.set("i", "<Down>", M.history_next, { buffer = bufnr })
     vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
     -- Disable nvim-cmp if installed
