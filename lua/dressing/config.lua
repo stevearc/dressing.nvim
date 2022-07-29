@@ -34,6 +34,20 @@ local default_config = {
     -- Change default highlight groups (see :help winhl)
     winhighlight = "",
 
+    -- Set to `false` to disable
+    mappings = {
+      n = {
+        ["<Esc>"] = "Close",
+        ["<CR>"] = "Confirm",
+      },
+      i = {
+        ["<C-c>"] = "Close",
+        ["<CR>"] = "Confirm",
+        ["<Up>"] = "HistoryPrev",
+        ["<Down>"] = "HistoryNext",
+      },
+    },
+
     override = function(conf)
       -- This is the config that will be passed to nvim_open_win.
       -- Change values here to customize the layout
@@ -117,6 +131,13 @@ local default_config = {
       height = nil,
       max_height = 0.9,
       min_height = { 10, 0.2 },
+
+      -- Set to `false` to disable
+      mappings = {
+        ["<Esc>"] = "Close",
+        ["<C-c>"] = "Close",
+        ["<CR>"] = "Confirm",
+      },
 
       override = function(conf)
         -- This is the config that will be passed to nvim_open_win.

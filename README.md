@@ -22,9 +22,7 @@ options in the functions. Customization will be done entirely using a separate
 
 ## Requirements
 
-Neovim 0.5+
-
-On versions prior to 0.6, this plugin will act as a polyfill for `vim.ui`
+Neovim 0.7.0+ (for earlier versions, use the [nvim-0.5 branch](https://github.com/stevearc/dressing.nvim/tree/nvim-0.5))
 
 ## Screenshots
 
@@ -153,6 +151,20 @@ require('dressing').setup({
     -- Change default highlight groups (see :help winhl)
     winhighlight = "",
 
+    -- Set to `false` to disable
+    mappings = {
+      n = {
+        ["<Esc>"] = "Close",
+        ["<CR>"] = "Confirm",
+      },
+      i = {
+        ["<C-c>"] = "Close",
+        ["<CR>"] = "Confirm",
+        ["<Up>"] = "HistoryPrev",
+        ["<Down>"] = "HistoryNext",
+      },
+    },
+
     override = function(conf)
       -- This is the config that will be passed to nvim_open_win.
       -- Change values here to customize the layout
@@ -236,6 +248,13 @@ require('dressing').setup({
       height = nil,
       max_height = 0.9,
       min_height = { 10, 0.2 },
+
+      -- Set to `false` to disable
+      mappings = {
+        ["<Esc>"] = "Close",
+        ["<C-c>"] = "Close",
+        ["<CR>"] = "Confirm",
+      },
 
       override = function(conf)
         -- This is the config that will be passed to nvim_open_win.

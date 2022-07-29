@@ -1,12 +1,43 @@
 name: Run tests
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - master
+  pull_request: ~
 
 jobs:
+  luacheck:
+    name: Luacheck
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+
+      - name: Prepare
+        run: |
+          sudo apt-get update
+          sudo add-apt-repository universe
+          sudo apt install luarocks -y
+          sudo luarocks install luacheck
+
+      - name: Run Luacheck
+        run: luacheck .
+
+  stylua:
+    name: StyLua
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Stylua
+        uses: JohnnyMorganz/stylua-action@1.0.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          args: --check .
+
   run_tests:
     strategy:
       matrix:
-        nvim_tag: [v0.5.0, v0.5.1, v0.6.0, v0.6.1, v0.7.0]
+        nvim_tag: [v0.7.0, v0.7.2]
 
     name: Run tests
     runs-on: ubuntu-20.04

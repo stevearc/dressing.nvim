@@ -1,5 +1,23 @@
+local map_util = require("dressing.map_util")
 local util = require("dressing.util")
 local M = {}
+
+local keymaps = {
+  {
+    desc = "Close vim.ui.select without a result",
+    plug = "<Plug>DressingSelect:Close",
+    rhs = function()
+      M.cancel()
+    end,
+  },
+  {
+    desc = "Select the current vim.ui.select item under the cursor",
+    plug = "<Plug>DressingSelect:Confirm",
+    rhs = function()
+      M.choose()
+    end,
+  },
+}
 
 M.is_supported = function()
   return true
@@ -57,16 +75,15 @@ M.select = function(config, items, opts, on_choice)
   vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
   util.add_title_to_win(winnr, opts.prompt)
 
-  local function map(lhs, rhs)
-    vim.api.nvim_buf_set_keymap(bufnr, "n", lhs, rhs, { silent = true, noremap = true })
-  end
-
-  map("<CR>", [[<cmd>lua require('dressing.select.builtin').choose()<CR>]])
-  map("<C-c>", [[<cmd>lua require('dressing.select.builtin').cancel()<CR>]])
-  map("<Esc>", [[<cmd>lua require('dressing.select.builtin').cancel()<CR>]])
-  vim.cmd([[
-    autocmd BufLeave <buffer> ++nested ++once lua require('dressing.select.builtin').cancel()
-  ]])
+  map_util.create_plug_maps(bufnr, keymaps)
+  map_util.create_maps_to_plug(bufnr, "n", config.mappings, "DressingSelect:")
+  vim.api.nvim_create_autocmd("BufLeave", {
+    desc = "Cancel vim.ui.select",
+    buffer = bufnr,
+    nested = true,
+    once = true,
+    callback = M.cancel,
+  })
 end
 
 local function close_window()
