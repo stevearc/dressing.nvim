@@ -29,7 +29,7 @@ return vim.schedule_wrap(function(items, opts, on_choice)
     on_choice = { on_choice, "function", false },
   })
   opts = opts or {}
-  local config = global_config.get_mod_config("select", opts)
+  local config = global_config.get_mod_config("select", opts, items)
 
   if not config.enabled then
     return patch.original_mods.select(items, opts, on_choice)
