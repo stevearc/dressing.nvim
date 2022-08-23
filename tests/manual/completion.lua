@@ -18,6 +18,14 @@ local cases = {
     prompt = "Complete customlist: ",
     completion = "customlist,CustomCompleteList",
   },
+  {
+    prompt = "Complete custom lua: ",
+    completion = "custom,v:lua.custom_complete_func",
+  },
+  {
+    prompt = "Complete customlist: ",
+    completion = "customlist,v:lua.custom_complete_list",
+  },
 }
 
 vim.cmd([[
@@ -29,6 +37,14 @@ function! CustomCompleteList(arglead, cmdline, cursorpos)
   return ['first', 'second', 'third']
 endfunction
 ]])
+
+function _G.custom_complete_func(arglead, cmdline, cursorpos)
+  return "first\nsecond\nthird"
+end
+
+function _G.custom_complete_list(arglead, cmdline, cursorpos)
+  return { "first", "second", "third" }
+end
 
 local function next()
   local opts = cases[idx]

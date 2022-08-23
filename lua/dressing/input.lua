@@ -164,7 +164,20 @@ M.completefunc = function(findstart, base)
     local pieces = split(completion, ",")
     if pieces[1] == "custom" or pieces[1] == "customlist" then
       local vimfunc = pieces[2]
-      local ret = vim.fn[vimfunc](base, base, vim.fn.strlen(base))
+      local ret
+      if vim.startswith(vimfunc, "v:lua.") then
+        local load_func = string.format("return %s(...)", vimfunc:sub(7))
+        local luafunc, err = loadstring(load_func)
+        if not luafunc then
+          vim.api.nvim_err_writeln(
+            string.format("Could not find completion function %s: %s", vimfunc, err)
+          )
+          return {}
+        end
+        ret = luafunc(base, base, vim.fn.strlen(base))
+      else
+        ret = vim.fn[vimfunc](base, base, vim.fn.strlen(base))
+      end
       if pieces[1] == "custom" then
         ret = split(ret, "\n")
       end
