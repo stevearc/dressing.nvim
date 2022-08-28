@@ -60,7 +60,7 @@ end
 
 M.calculate_col = function(relative, width, winid)
   if relative == "cursor" then
-    return 1
+    return 0
   else
     return math.floor((get_max_width(relative, winid) - width) / 2)
   end
@@ -68,7 +68,7 @@ end
 
 M.calculate_row = function(relative, height, winid)
   if relative == "cursor" then
-    return 1
+    return 0
   else
     return math.floor((get_max_height(relative, winid) - height) / 2)
   end
