@@ -164,4 +164,14 @@ M._on_win_closed = function(winid)
   winid_map[winid] = nil
 end
 
+M.schedule_wrap_before_vimenter = function(func)
+  return function(...)
+    if vim.v.vim_did_enter == 0 then
+      return vim.schedule_wrap(func)(...)
+    else
+      return func(...)
+    end
+  end
+end
+
 return M

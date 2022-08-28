@@ -1,5 +1,6 @@
 local global_config = require("dressing.config")
 local patch = require("dressing.patch")
+local util = require("dressing.util")
 
 local function get_backend(config)
   local backends = config.backend
@@ -17,7 +18,7 @@ end
 
 -- use schedule_wrap to avoid a bug when vim opens
 -- (see https://github.com/stevearc/dressing.nvim/issues/15)
-return vim.schedule_wrap(function(items, opts, on_choice)
+return util.schedule_wrap_before_vimenter(function(items, opts, on_choice)
   vim.validate({
     items = {
       items,

@@ -273,7 +273,7 @@ end
 setmetatable(M, {
   -- use schedule_wrap to avoid a bug when vim opens
   -- (see https://github.com/stevearc/dressing.nvim/issues/15)
-  __call = vim.schedule_wrap(function(_, opts, on_confirm)
+  __call = util.schedule_wrap_before_vimenter(function(_, opts, on_confirm)
     vim.validate({
       on_confirm = { on_confirm, "function", false },
     })
