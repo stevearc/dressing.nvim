@@ -1,17 +1,19 @@
-local config = require("dressing.config")
 local patch = require("dressing.patch")
 
 local M = {}
 
 M.setup = function(opts)
-  config.update(opts)
+  require("dressing.config").update(opts)
   patch.all()
 end
 
+---Patch all the vim.ui methods
 M.patch = function()
   patch.all()
 end
 
+---Unpatch all the vim.ui methods
+---@param names? string[] Names of vim.ui modules to unpatch
 M.unpatch = function(names)
   if not names then
     return patch.all(false)
