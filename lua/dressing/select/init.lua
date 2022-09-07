@@ -58,5 +58,15 @@ return vim.schedule_wrap(function(items, opts, on_choice)
   end
 
   local backend, name = get_backend(config)
-  backend.select(config[name], items, opts, on_choice)
+  local winid = vim.api.nvim_get_current_win()
+  local cursor = vim.api.nvim_win_get_cursor(winid)
+  backend.select(
+    config[name],
+    items,
+    opts,
+    vim.schedule_wrap(function(...)
+      vim.api.nvim_win_set_cursor(winid, cursor)
+      on_choice(...)
+    end)
+  )
 end)
