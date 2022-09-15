@@ -37,7 +37,7 @@ M.custom_kind = {
         display = make_display,
         text = text,
         client_name = client_name,
-        ordinal = idx .. "" .. text .. " " .. client_name,
+        ordinal = idx .. " " .. text .. " " .. client_name,
         value = item,
       })
     end
