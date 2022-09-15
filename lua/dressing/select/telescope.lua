@@ -1,3 +1,5 @@
+local strings = require "plenary.strings"
+
 local M = {}
 
 M.is_supported = function()
@@ -12,6 +14,7 @@ M.custom_kind = {
 
     local function make_display(entry)
       local columns = {
+        { entry.idx .. ':', 'TelescopePromptPrefix' },
         entry.text,
         { entry.client_name, "Comment" },
       }
@@ -19,9 +22,10 @@ M.custom_kind = {
     end
 
     local entries = {}
+    local idx_width = 0
     local client_width = 1
     local text_width = 1
-    for _, item in ipairs(items) do
+    for idx, item in ipairs(items) do
       local client_id = item[1]
       local client_name = vim.lsp.get_client_by_id(client_id).name
       local len = vim.api.nvim_strwidth(client_name)
@@ -33,17 +37,20 @@ M.custom_kind = {
       if len > text_width then
         text_width = len
       end
+      idx_width = math.max(idx_width, strings.strdisplaywidth(idx))
       table.insert(entries, {
+        idx = idx,
         display = make_display,
         text = text,
         client_name = client_name,
-        ordinal = text .. " " .. client_name,
+        ordinal = idx .. "" .. text .. " " .. client_name,
         value = item,
       })
     end
     displayer = entry_display.create({
       separator = " ",
       items = {
+        { width = idx_width + 1 },
         { width = text_width },
         { width = client_width },
       },
