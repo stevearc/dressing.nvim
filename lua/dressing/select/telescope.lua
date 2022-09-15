@@ -1,5 +1,3 @@
-local strings = require "plenary.strings"
-
 local M = {}
 
 M.is_supported = function()
@@ -22,22 +20,18 @@ M.custom_kind = {
     end
 
     local entries = {}
-    local idx_width = 0
     local client_width = 1
     local text_width = 1
+    local idx_width = 1
     for idx, item in ipairs(items) do
       local client_id = item[1]
       local client_name = vim.lsp.get_client_by_id(client_id).name
-      local len = vim.api.nvim_strwidth(client_name)
-      if len > client_width then
-        client_width = len
-      end
       local text = opts.format_item(item)
-      len = vim.api.nvim_strwidth(text)
-      if len > text_width then
-        text_width = len
-      end
-      idx_width = math.max(idx_width, strings.strdisplaywidth(idx))
+
+      client_width = math.max(client_width, vim.api.nvim_strwidth(client_name))
+      text_width = math.max(text_width, vim.api.nvim_strwidth(text))
+      idx_width = math.max(idx_width, vim.api.nvim_strwidth(tostring(idx)))
+
       table.insert(entries, {
         idx = idx,
         display = make_display,
