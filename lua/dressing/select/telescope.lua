@@ -12,7 +12,7 @@ M.custom_kind = {
 
     local function make_display(entry)
       local columns = {
-        { entry.idx .. ':', 'TelescopePromptPrefix' },
+        { entry.idx .. ":", "TelescopePromptPrefix" },
         entry.text,
         { entry.client_name, "Comment" },
       }
