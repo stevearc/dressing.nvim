@@ -12,6 +12,7 @@ M.custom_kind = {
 
     local function make_display(entry)
       local columns = {
+        { entry.idx .. ':', 'TelescopePromptPrefix' },
         entry.text,
         { entry.client_name, "Comment" },
       }
@@ -21,29 +22,29 @@ M.custom_kind = {
     local entries = {}
     local client_width = 1
     local text_width = 1
-    for _, item in ipairs(items) do
+    local idx_width = 1
+    for idx, item in ipairs(items) do
       local client_id = item[1]
       local client_name = vim.lsp.get_client_by_id(client_id).name
-      local len = vim.api.nvim_strwidth(client_name)
-      if len > client_width then
-        client_width = len
-      end
       local text = opts.format_item(item)
-      len = vim.api.nvim_strwidth(text)
-      if len > text_width then
-        text_width = len
-      end
+
+      client_width = math.max(client_width, vim.api.nvim_strwidth(client_name))
+      text_width = math.max(text_width, vim.api.nvim_strwidth(text))
+      idx_width = math.max(idx_width, vim.api.nvim_strwidth(tostring(idx)))
+
       table.insert(entries, {
+        idx = idx,
         display = make_display,
         text = text,
         client_name = client_name,
-        ordinal = text .. " " .. client_name,
+        ordinal = idx .. " " .. text .. " " .. client_name,
         value = item,
       })
     end
     displayer = entry_display.create({
       separator = " ",
       items = {
+        { width = idx_width + 1 },
         { width = text_width },
         { width = client_width },
       },
