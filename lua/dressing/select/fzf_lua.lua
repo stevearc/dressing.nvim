@@ -5,7 +5,7 @@ M.is_supported = function()
 end
 
 M.select = function(config, items, opts, on_choice)
-  local fzf = require("fzf-lua")
+  local fzf = require("fzf-lua.core")
   local labels = {}
   for i, item in ipairs(items) do
     table.insert(labels, string.format("%d: %s", i, opts.format_item(item)))
