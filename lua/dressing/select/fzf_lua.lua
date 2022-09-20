@@ -19,7 +19,7 @@ M.select = function(config, items, opts, on_choice)
     actions = {
       -- "default" gets called when pressing "enter"
       -- all fzf style binds (i.e. "ctrl-y") are valid
-      ["default"]  = function(selected, _)
+      ["default"] = function(selected, _)
         if not selected then
           on_choice(nil, nil)
         else
@@ -28,8 +28,8 @@ M.select = function(config, items, opts, on_choice)
           local item = items[lnum]
           on_choice(item, lnum)
         end
-      end
-    }
+      end,
+    },
   })
   fzf.fzf_exec(labels, fzf_opts)
 end
