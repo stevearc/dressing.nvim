@@ -16,18 +16,22 @@ M.select = function(config, items, opts, on_choice)
       ["--no-multi"] = "",
       ["--preview-window"] = "hidden:right:0",
     },
+    actions = {
+      -- "default" gets called when pressing "enter"
+      -- all fzf style binds (i.e. "ctrl-y") are valid
+      ["default"]  = function(selected, _)
+        if not selected then
+          on_choice(nil, nil)
+        else
+          local label = selected[1]
+          local lnum = tonumber(label:match("^(%d+):"))
+          local item = items[lnum]
+          on_choice(item, lnum)
+        end
+      end
+    }
   })
-  fzf.fzf_wrap(fzf_opts, labels, function(selected)
-    if not selected then
-      on_choice(nil, nil)
-    else
-      local label = selected[1]
-      local colon = string.find(label, ":")
-      local lnum = tonumber(string.sub(label, 1, colon - 1))
-      local item = items[lnum]
-      on_choice(item, lnum)
-    end
-  end)()
+  fzf.fzf_exec(labels, fzf_opts)
 end
 
 return M
