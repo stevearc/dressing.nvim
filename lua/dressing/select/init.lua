@@ -65,7 +65,9 @@ return vim.schedule_wrap(function(items, opts, on_choice)
     items,
     opts,
     vim.schedule_wrap(function(...)
-      vim.api.nvim_win_set_cursor(winid, cursor)
+      if vim.api.nvim_win_is_valid(winid) then
+        vim.api.nvim_win_set_cursor(winid, cursor)
+      end
       on_choice(...)
     end)
   )
