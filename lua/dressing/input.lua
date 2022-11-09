@@ -97,9 +97,6 @@ local function confirm(text)
   -- deleted from the buffer after the input window closes.
   vim.defer_fn(function()
     pcall(vim.api.nvim_win_close, ctx.winid, true)
-    if text == "" then
-      text = nil
-    end
     if text and history[#history] ~= text then
       table.insert(history, text)
     end

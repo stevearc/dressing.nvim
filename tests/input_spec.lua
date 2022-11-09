@@ -78,6 +78,28 @@ a.describe("input modal", function()
     assert(ret == "my text", string.format("Got '%s' expected 'my text'", ret))
   end)
 
+  a.it("returns cancelreturn when input is canceled <C-c>", function()
+    local ret = run_input({
+      "my text",
+      "<C-c>",
+    }, { cancelreturn = "CANCELED" })
+    assert(ret == "CANCELED", string.format("Got '%s' expected nil", ret))
+  end)
+
+  a.it("returns empty string when input is empty", function()
+    local ret = run_input({
+      "<CR>",
+    })
+    assert(ret == "", string.format("Got '%s' expected nil", ret))
+  end)
+
+  a.it("returns empty string when input is empty, even if cancelreturn set", function()
+    local ret = run_input({
+      "<CR>",
+    }, { cancelreturn = "CANCELED" })
+    assert(ret == "", string.format("Got '%s' expected nil", ret))
+  end)
+
   a.it("starts in normal mode when start_in_insert = false", function()
     local orig_cmd = vim.cmd
     local startinsert_called = false
