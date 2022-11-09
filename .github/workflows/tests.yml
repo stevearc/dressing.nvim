@@ -1,15 +1,11 @@
 name: Run tests
 
-on:
-  push:
-    branches:
-      - master
-  pull_request: ~
+on: [push, pull_request]
 
 jobs:
   luacheck:
     name: Luacheck
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v1
 
@@ -25,7 +21,7 @@ jobs:
 
   stylua:
     name: StyLua
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Stylua
@@ -38,10 +34,10 @@ jobs:
   run_tests:
     strategy:
       matrix:
-        nvim_tag: [v0.7.0, v0.7.2]
+        nvim_tag: [v0.7.0, v0.7.2, v0.8.0]
 
     name: Run tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       NVIM_TAG: ${{ matrix.nvim_tag }}
     steps:
