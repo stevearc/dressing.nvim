@@ -11,7 +11,10 @@ M.select = function(config, items, opts, on_choice)
     table.insert(labels, string.format("%d: %s", i, opts.format_item(item)))
   end
 
+  local prompt = (opts.prompt or "Select one of") .. "> "
+
   local fzf_opts = vim.tbl_deep_extend("keep", config, {
+    prompt = prompt,
     fzf_opts = {
       ["--no-multi"] = "",
       ["--preview-window"] = "hidden:right:0",
