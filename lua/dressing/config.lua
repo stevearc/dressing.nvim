@@ -29,10 +29,13 @@ local default_config = {
     max_width = { 140, 0.9 },
     min_width = { 20, 0.2 },
 
-    -- Window transparency (0-100)
-    winblend = 10,
-    -- Change default highlight groups (see :help winhl)
-    winhighlight = "",
+    buf_options = {},
+    win_options = {
+      -- Window transparency (0-100)
+      winblend = 10,
+      -- Disable line wrapping
+      wrap = false,
+    },
 
     -- Set to `false` to disable
     mappings = {
@@ -117,10 +120,11 @@ local default_config = {
       -- 'editor' and 'win' will default to being centered
       relative = "editor",
 
-      -- Window transparency (0-100)
-      winblend = 10,
-      -- Change default highlight groups (see :help winhl)
-      winhighlight = "",
+      buf_options = {},
+      win_options = {
+        -- Window transparency (0-100)
+        winblend = 10,
+      },
 
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
       -- the min_ and max_ options can be a list of mixed types.
@@ -169,6 +173,25 @@ M.update = function(opts)
       "Deprecated: Dressing row and col are no longer used. Use the override to customize layout (:help dressing)",
       vim.log.levels.WARN
     )
+  end
+
+  for _, ns in ipairs({ "input", "select.builtin" }) do
+    local subconf = ns == "input" and newconf.input or newconf.select.builtin
+    for _, key in ipairs({ "winblend", "winhighlight" }) do
+      if subconf[key] then
+        vim.notify_once(
+          string.format(
+            "Deprecated(dressing.%s.%s) has moved to dressing.%s.win_options.%s\nSupport will be removed on 2023-03-01",
+            ns,
+            key,
+            ns,
+            key
+          ),
+          vim.log.levels.WARN
+        )
+        subconf.win_options[key] = subconf[key]
+      end
+    end
   end
 
   if

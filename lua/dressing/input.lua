@@ -300,14 +300,17 @@ setmetatable(M, {
       history_idx = nil,
       start_in_insert = start_in_insert,
     }
-    vim.api.nvim_win_set_option(winid, "winblend", config.winblend)
-    vim.api.nvim_win_set_option(winid, "winhighlight", config.winhighlight)
-    vim.api.nvim_win_set_option(winid, "wrap", false)
+    for option, value in pairs(config.win_options) do
+      vim.api.nvim_win_set_option(winid, option, value)
+    end
     local bufnr = vim.api.nvim_win_get_buf(winid)
 
     -- Finish setting up the buffer
     vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
     vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+    for k, v in pairs(config.buf_options) do
+      vim.api.nvim_buf_set_option(bufnr, k, v)
+    end
 
     map_util.create_plug_maps(bufnr, keymaps)
     for mode, user_maps in pairs(config.mappings) do

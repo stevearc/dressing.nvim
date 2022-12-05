@@ -42,6 +42,9 @@ M.select = function(config, items, opts, on_choice)
   local bufnr = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
   vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+  for k, v in pairs(config.buf_options) do
+    vim.api.nvim_buf_set_option(bufnr, k, v)
+  end
   local lines = {}
   local max_width = 1
   for _, item in ipairs(items) do
@@ -67,13 +70,14 @@ M.select = function(config, items, opts, on_choice)
     style = "minimal",
   }
   winopt = config.override(winopt) or winopt
-  local winnr = vim.api.nvim_open_win(bufnr, true, winopt)
-  vim.api.nvim_win_set_option(winnr, "winblend", config.winblend)
-  vim.api.nvim_win_set_option(winnr, "winhighlight", config.winhighlight)
-  vim.api.nvim_win_set_option(winnr, "cursorline", true)
-  pcall(vim.api.nvim_win_set_option, winnr, "cursorlineopt", "both")
+  local winid = vim.api.nvim_open_win(bufnr, true, winopt)
+  vim.api.nvim_win_set_option(winid, "cursorline", true)
+  pcall(vim.api.nvim_win_set_option, winid, "cursorlineopt", "both")
+  for option, value in pairs(config.win_options) do
+    vim.api.nvim_win_set_option(winid, option, value)
+  end
   vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
-  util.add_title_to_win(winnr, opts.prompt)
+  util.add_title_to_win(winid, opts.prompt)
 
   map_util.create_plug_maps(bufnr, keymaps)
   map_util.create_maps_to_plug(bufnr, "n", config.mappings, "DressingSelect:")
