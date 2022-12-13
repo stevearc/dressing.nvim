@@ -323,13 +323,6 @@ setmetatable(M, {
 
     vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
-    -- Disable nvim-cmp if installed
-    local ok, cmp = pcall(require, "cmp")
-    if ok then
-      cmp.setup.buffer({ enabled = false })
-    end
-    -- Disable mini.nvim completion if installed
-    vim.api.nvim_buf_set_var(bufnr, "minicompletion_disable", true)
     util.add_title_to_win(
       winid,
       string.gsub(prompt, "^%s*(.-)%s*$", "%1"),
@@ -342,10 +335,25 @@ setmetatable(M, {
       callback = M.highlight,
     })
 
+    -- Configure nvim-cmp if installed
+    local has_cmp, cmp = pcall(require, "cmp")
+    if has_cmp then
+      cmp.setup.buffer({
+        enabled = opts.completion ~= nil,
+        sources = {
+          { name = "omni" },
+        },
+      })
+    end
+    -- Disable mini.nvim completion if installed
+    vim.api.nvim_buf_set_var(bufnr, "minicompletion_disable", true)
     if opts.completion then
       vim.api.nvim_buf_set_option(bufnr, "completefunc", "v:lua.dressing_input_complete")
-      vim.api.nvim_buf_set_option(bufnr, "omnifunc", "")
-      vim.keymap.set("i", "<Tab>", M.trigger_completion, { buffer = bufnr, expr = true })
+      vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.dressing_input_complete")
+      -- Only set up <Tab> user completion if cmp is not active
+      if not has_cmp or not pcall(require, "cmp_omni") then
+        vim.keymap.set("i", "<Tab>", M.trigger_completion, { buffer = bufnr, expr = true })
+      end
     end
 
     vim.api.nvim_create_autocmd("BufLeave", {
