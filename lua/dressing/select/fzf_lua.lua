@@ -7,8 +7,8 @@ end
 M.select = function(config, items, opts, on_choice)
   local fzf = require("fzf-lua")
   local labels = {}
-  for i, item in ipairs(items) do
-    table.insert(labels, string.format("%d: %s", i, opts.format_item(item)))
+  for _, item in ipairs(items) do
+    table.insert(labels, string.format("%s", opts.format_item(item)))
   end
 
   local prompt = (opts.prompt or "Select one of") .. "> "
