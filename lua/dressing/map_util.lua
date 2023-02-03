@@ -8,7 +8,7 @@ end
 
 ---@param bufnr number
 ---@param mode string
----@param bindings table<string, string>
+---@param bindings table<string, string|table>
 ---@param prefix string
 M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
   local maps
@@ -17,6 +17,16 @@ M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
   end
   for lhs, rhs in pairs(bindings) do
     if rhs then
+      local opts = { buffer = bufnr, remap = true }
+      if type(rhs) == "table" then
+        for k, v in pairs(rhs) do
+          if type(k) == "string" then
+            opts[k] = v
+          elseif k == 1 then
+            rhs = v
+          end
+        end
+      end
       -- Prefix with <Plug> unless this is a <Cmd> or :Cmd mapping
       if type(rhs) == "string" and not rhs:match("[<:]") then
         rhs = "<Plug>" .. prefix .. rhs
@@ -30,7 +40,7 @@ M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
           end
         end
       end
-      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, remap = true })
+      vim.keymap.set(mode, lhs, rhs, opts)
     end
   end
 end
