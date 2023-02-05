@@ -48,6 +48,8 @@ Configure dressing.nvim by calling the setup() function.
         mappings = {
           n = {
             ["<Esc>"] = "Close",
+            -- You can also pass additional opts to vim.keymap.set().
+            -- ["<Esc>"] = { "Close", nowait = true },
             ["<CR>"] = "Confirm",
           },
           i = {
