@@ -158,8 +158,6 @@ require('dressing').setup({
     mappings = {
       n = {
         ["<Esc>"] = "Close",
-        -- You can also pass additional opts to vim.keymap.set().
-        -- ["<Esc>"] = { "Close", nowait = true },
         ["<CR>"] = "Confirm",
       },
       i = {
