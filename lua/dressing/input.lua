@@ -290,7 +290,7 @@ setmetatable(M, {
     end
 
     -- Create or update the window
-    local prompt = opts.prompt or config.default_prompt
+    local prompt = string.gsub(opts.prompt or config.default_prompt, "\n", " ")
 
     local winid, start_in_insert = create_or_update_win(config, prompt, opts)
     context = {
@@ -322,7 +322,7 @@ setmetatable(M, {
     end
 
     vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { opts.default or "" })
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { string.gsub(opts.default or "", "\n", " ") })
     util.add_title_to_win(
       winid,
       string.gsub(prompt, "^%s*(.-)%s*$", "%1"),

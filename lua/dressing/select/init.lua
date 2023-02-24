@@ -15,6 +15,16 @@ local function get_backend(config)
   return require("dressing.select.builtin"), "builtin"
 end
 
+local function sanitize_line(line)
+  return string.gsub(tostring(line), "\n", " ")
+end
+
+local function with_sanitize_line(fn)
+  return function(...)
+    return sanitize_line(fn(...))
+  end
+end
+
 -- use schedule_wrap to avoid a bug when vim opens
 -- (see https://github.com/stevearc/dressing.nvim/issues/15)
 -- also to prevent focus problems for providers
@@ -37,24 +47,21 @@ return vim.schedule_wrap(function(items, opts, on_choice)
     return patch.original_mods.select(items, opts, on_choice)
   end
 
-  opts.prompt = opts.prompt or "Select one of:"
+  opts.prompt = sanitize_line(opts.prompt or "Select one of:")
   if config.trim_prompt and opts.prompt:sub(-1, -1) == ":" then
     opts.prompt = opts.prompt:sub(1, -2)
   end
 
   local format_override = config.format_item_override[opts.kind]
   if format_override then
-    opts.format_item = format_override
+    opts.format_item = with_sanitize_line(format_override)
   elseif opts.format_item then
     -- format_item doesn't *technically* have to return a string for the
     -- core implementation. We should maintain compatibility by wrapping the
     -- return value with tostring
-    local format_item = opts.format_item
-    opts.format_item = function(item)
-      return tostring(format_item(item))
-    end
+    opts.format_item = with_sanitize_line(opts.format_item)
   else
-    opts.format_item = tostring
+    opts.format_item = sanitize_line
   end
 
   local backend, name = get_backend(config)
