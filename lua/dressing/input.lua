@@ -322,7 +322,8 @@ setmetatable(M, {
     end
 
     vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
-    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { string.gsub(opts.default or "", "\n", " ") })
+    local default = string.gsub(opts.default or "", "\n", " ")
+    vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { default })
     util.add_title_to_win(
       winid,
       string.gsub(prompt, "^%s*(.-)%s*$", "%1"),
