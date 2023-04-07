@@ -69,6 +69,10 @@ M.select = function(config, items, opts, on_choice)
     zindex = 150,
     style = "minimal",
   }
+  if vim.fn.has("nvim-0.9") == 1 then
+    winopt.title = opts.prompt
+    winopt.title_pos = config.title_pos or "center"
+  end
   winopt = config.override(winopt) or winopt
   local winid = vim.api.nvim_open_win(bufnr, true, winopt)
   vim.api.nvim_win_set_option(winid, "cursorline", true)
@@ -77,7 +81,9 @@ M.select = function(config, items, opts, on_choice)
     vim.api.nvim_win_set_option(winid, option, value)
   end
   vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
-  util.add_title_to_win(winid, opts.prompt)
+  if vim.fn.has("nvim-0.9") == 0 then
+    util.add_title_to_win(winid, opts.prompt)
+  end
 
   map_util.create_plug_maps(bufnr, keymaps)
   map_util.create_maps_to_plug(bufnr, "n", config.mappings, "DressingSelect:")

@@ -249,6 +249,11 @@ local function create_or_update_win(config, prompt, opts)
       winopt.win = nil
     end
   end
+  if vim.fn.has("nvim-0.9") == 1 then
+    winopt.title = prompt:gsub("^%s*(.-)%s*$", "%1")
+    -- We used to use "prompt_align" here
+    winopt.title_pos = config.prompt_align or config.title_pos
+  end
 
   winopt = config.override(winopt) or winopt
 
@@ -324,11 +329,13 @@ setmetatable(M, {
     vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
     local default = string.gsub(opts.default or "", "\n", " ")
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { default })
-    util.add_title_to_win(
-      winid,
-      string.gsub(prompt, "^%s*(.-)%s*$", "%1"),
-      { align = config.prompt_align }
-    )
+    if vim.fn.has("nvim-0.9") == 0 then
+      util.add_title_to_win(
+        winid,
+        string.gsub(prompt, "^%s*(.-)%s*$", "%1"),
+        { align = config.prompt_align }
+      )
+    end
 
     vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
       desc = "Update highlights",
