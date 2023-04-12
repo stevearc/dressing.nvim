@@ -283,18 +283,10 @@ require('dressing').setup({
 
 ## Highlights
 
-The built-in `vim.ui.input` and `vim.ui.select` components mostly use the
-standard highlight groups for neovim floating windows (e.g. `NormalFloat` for
-the text, `FloatBorder` for the border). In addition, the window title uses a
-non-standard `FloatTitle` group that is linked to `FloatBorder` by default.
-
 A common way to adjust the highlighting of just the dressing windows is by
 providing a `winhighlight` option in the config. For example, `winhighlight = 'NormalFloat:DiagnosticError'`
 would change the default text color in the dressing windows. See `:help winhighlight`
 for more details.
-
-Note that you can't change `FloatTitle` via `winhighlight` since it is not a
-built-in group.
 
 ## Advanced configuration
 
@@ -357,6 +349,7 @@ For now this is available only for the telescope backend, but feel free to reque
 ## Alternative and related projects
 
 - [telescope-ui-select](https://github.com/nvim-telescope/telescope-ui-select.nvim) - provides a `vim.ui.select` implementation for telescope
+- [fzf-lua](https://github.com/ibhagwan/fzf-lua/blob/061a4df40f5238782fdd7b380fe55650fadd9384/README.md?plain=1#L259-L264) - provides a `vim.ui.select` implementation for fzf
 - [nvim-fzy](https://github.com/mfussenegger/nvim-fzy) - fzf alternative that also provides a `vim.ui.select` implementation ([#13](https://github.com/mfussenegger/nvim-fzy/pull/13))
 - [guihua.lua](https://github.com/ray-x/guihua.lua) - multipurpose GUI library that provides `vim.ui.select` and `vim.ui.input` implementations
 - [nvim-notify](https://github.com/rcarriga/nvim-notify) - doing pretty much the
