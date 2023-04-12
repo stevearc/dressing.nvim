@@ -28,7 +28,7 @@ Neovim 0.7.0+ (for earlier versions, use the [nvim-0.5 branch](https://github.co
 
 `vim.confirm`
 
-TODO
+![Screenshot 2023-04-12 at 9 27 53 AM](https://user-images.githubusercontent.com/506791/231521989-3a4049ae-f56e-4864-b0df-4dc9702f14b1.png)
 
 `vim.select` (telescope)
 
