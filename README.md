@@ -355,4 +355,4 @@ For now this is available only for the telescope backend, but feel free to reque
 - [nvim-notify](https://github.com/rcarriga/nvim-notify) - doing pretty much the
   same thing but for `vim.notify`
 - [nui.nvim](https://github.com/MunifTanjim/nui.nvim) - provides common UI
-  components for plugin authors
+  components for plugin authors. [The wiki](https://github.com/MunifTanjim/nui.nvim/wiki/vim.ui) has examples of how to build your own `vim.ui` interfaces.
