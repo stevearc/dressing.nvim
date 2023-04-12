@@ -1,10 +1,6 @@
 # Dressing.nvim
 
-With the release of Neovim 0.6 we were given the start of extensible core UI
-hooks ([vim.ui.select](https://github.com/neovim/neovim/pull/15771) and
-[vim.ui.input](https://github.com/neovim/neovim/pull/15959)). They exist to
-allow plugin authors to override them with improvements upon the default
-behavior, so that's exactly what we're going to do.
+Neovim has several utility functions under the `vim.ui.*` namespace for accepting input from the user. Dressing replaces the default functions with prettier implementations that use floating windows.
 
 It is a goal to match and not extend the core Neovim API. All options that core
 respects will be respected, and we will not accept any custom parameters or
@@ -26,9 +22,13 @@ Neovim 0.7.0+ (for earlier versions, use the [nvim-0.5 branch](https://github.co
 
 ## Screenshots
 
-`vim.input` replacement (handling a LSP rename)
+`vim.input` (handling a LSP rename)
 
 ![Screenshot from 2021-12-09 17-36-16](https://user-images.githubusercontent.com/506791/145502533-3dc2f87d-95ea-422d-a318-12c0092f1bdf.png)
+
+`vim.confirm`
+
+TODO
 
 `vim.select` (telescope)
 
