@@ -88,14 +88,6 @@ local default_config = {
       },
     },
 
-    -- Options for fzf_lua selector
-    fzf_lua = {
-      winopts = {
-        width = 0.5,
-        height = 0.4,
-      },
-    },
-
     -- Options for nui Menu
     nui = {
       position = "50%",

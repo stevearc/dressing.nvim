@@ -5,7 +5,7 @@ local function run_test(backend)
   local prev_backend = config.select.backend
   config.select.backend = backend
   vim.ui.select({ "first", "second", "third" }, {
-    prompt = "Make selection",
+    prompt = "Make selection: ",
     kind = "test",
   }, function(item, lnum)
     if item and lnum then
