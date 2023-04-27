@@ -51,6 +51,18 @@ Neovim 0.7.0+ (for earlier versions, use the [nvim-0.5 branch](https://github.co
 dressing.nvim supports all the usual plugin managers
 
 <details>
+  <summary>lazy.nvim</summary>
+
+```lua
+{
+  'stevearc/dressing.nvim',
+  opts = {},
+}
+```
+
+</details>
+
+<details>
   <summary>Packer</summary>
 
 ```lua
