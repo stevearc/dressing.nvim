@@ -172,25 +172,6 @@ M.update = function(opts)
     )
   end
 
-  for _, ns in ipairs({ "input", "select.builtin" }) do
-    local subconf = ns == "input" and newconf.input or newconf.select.builtin
-    for _, key in ipairs({ "winblend", "winhighlight" }) do
-      if subconf[key] then
-        vim.notify_once(
-          string.format(
-            "Deprecated(dressing.%s.%s) has moved to dressing.%s.win_options.%s\nSupport will be removed on 2023-03-01",
-            ns,
-            key,
-            ns,
-            key
-          ),
-          vim.log.levels.WARN
-        )
-        subconf.win_options[key] = subconf[key]
-      end
-    end
-  end
-
   if
     newconf.select.telescope
     and newconf.select.telescope.theme
