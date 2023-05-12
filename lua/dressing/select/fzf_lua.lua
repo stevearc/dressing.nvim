@@ -5,13 +5,13 @@ M.is_supported = function()
 end
 
 M.select = function(config, items, opts, on_choice)
-  if config then
-    vim.notify_once(
-      "Deprecated: dressing config for fzf_lua has been removed in favor of using the built-in fzf-lua vim.ui.select implementation.\nRemove the fzf_lua key from dressing.setup()",
-      vim.log.levels.WARN
-    )
+  local ui_select = require("fzf-lua.providers.ui_select")
+  if config and not vim.tbl_isempty(config) then
+    -- Registering then unregistering sets the config options
+    ui_select.register(config, true)
+    ui_select.deregister(nil, true, true)
   end
-  return require("fzf-lua.providers.ui_select").ui_select(items, opts, on_choice)
+  return ui_select.ui_select(items, opts, on_choice)
 end
 
 return M
