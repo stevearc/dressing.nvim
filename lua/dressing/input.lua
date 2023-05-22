@@ -306,15 +306,15 @@ setmetatable(M, {
       start_in_insert = start_in_insert,
     }
     for option, value in pairs(config.win_options) do
-      vim.api.nvim_win_set_option(winid, option, value)
+      vim.wo[winid][option] = value
     end
     local bufnr = vim.api.nvim_win_get_buf(winid)
 
     -- Finish setting up the buffer
-    vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
-    vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+    vim.bo[bufnr].swapfile = false
+    vim.bo[bufnr].bufhidden = "wipe"
     for k, v in pairs(config.buf_options) do
-      vim.api.nvim_buf_set_option(bufnr, k, v)
+      vim.bo[bufnr][k] = v
     end
 
     map_util.create_plug_maps(bufnr, keymaps)
@@ -326,7 +326,7 @@ setmetatable(M, {
       vim.keymap.set("i", "<Esc>", M.close, { buffer = bufnr })
     end
 
-    vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingInput")
+    vim.bo[bufnr].filetype = "DressingInput"
     local default = string.gsub(opts.default or "", "\n", " ")
     vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { default })
     if vim.fn.has("nvim-0.9") == 0 then
@@ -356,8 +356,8 @@ setmetatable(M, {
     -- Disable mini.nvim completion if installed
     vim.api.nvim_buf_set_var(bufnr, "minicompletion_disable", true)
     if opts.completion then
-      vim.api.nvim_buf_set_option(bufnr, "completefunc", "v:lua.dressing_input_complete")
-      vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.dressing_input_complete")
+      vim.bo[bufnr].completefunc = "v:lua.dressing_input_complete"
+      vim.bo[bufnr].omnifunc = "v:lua.dressing_input_complete"
       -- Only set up <Tab> user completion if cmp is not active
       if not has_cmp or not pcall(require, "cmp_omni") then
         vim.keymap.set("i", "<Tab>", M.trigger_completion, { buffer = bufnr, expr = true })

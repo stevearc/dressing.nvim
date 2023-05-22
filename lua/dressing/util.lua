@@ -136,12 +136,8 @@ M.add_title_to_win = function(winid, title, opts)
       noautocmd = true,
     })
     winid_map[winid] = title_winid
-    vim.api.nvim_win_set_option(
-      title_winid,
-      "winblend",
-      vim.api.nvim_win_get_option(winid, "winblend")
-    )
-    vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+    vim.wo[title_winid].winblend = vim.wo[winid].winblend
+    vim.bo[bufnr].bufhidden = "wipe"
     vim.cmd(string.format(
       [[
       autocmd WinClosed %d ++once lua require('dressing.util')._on_win_closed(%d)

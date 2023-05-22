@@ -40,10 +40,10 @@ M.select = function(config, items, opts, on_choice)
   _callback = on_choice
   _items = items
   local bufnr = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_option(bufnr, "swapfile", false)
-  vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+  vim.bo[bufnr].swapfile = false
+  vim.bo[bufnr].bufhidden = "wipe"
   for k, v in pairs(config.buf_options) do
-    vim.api.nvim_buf_set_option(bufnr, k, v)
+    vim.bo[bufnr][k] = v
   end
   local lines = {}
   local max_width = 1
@@ -53,7 +53,7 @@ M.select = function(config, items, opts, on_choice)
     table.insert(lines, line)
   end
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
-  vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
+  vim.bo[bufnr].modifiable = false
   local width = util.calculate_width(config.relative, max_width, config, 0)
   local height = util.calculate_height(config.relative, #lines, config, 0)
   local row = util.calculate_row(config.relative, height, 0)
@@ -75,12 +75,12 @@ M.select = function(config, items, opts, on_choice)
   end
   winopt = config.override(winopt) or winopt
   local winid = vim.api.nvim_open_win(bufnr, true, winopt)
-  vim.api.nvim_win_set_option(winid, "cursorline", true)
-  pcall(vim.api.nvim_win_set_option, winid, "cursorlineopt", "both")
+  vim.wo[winid].cursorline = true
+  vim.wo[winid].cursorlineopt = "both"
   for option, value in pairs(config.win_options) do
-    vim.api.nvim_win_set_option(winid, option, value)
+    vim.wo[winid][option] = value
   end
-  vim.api.nvim_buf_set_option(bufnr, "filetype", "DressingSelect")
+  vim.bo[bufnr].filetype = "DressingSelect"
   if vim.fn.has("nvim-0.9") == 0 then
     util.add_title_to_win(winid, opts.prompt)
   end
