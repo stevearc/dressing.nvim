@@ -120,11 +120,11 @@ M.close = function()
 end
 
 M.highlight = function()
-  if not context.opts then
+  local opts = context.opts
+  if not opts then
     return
   end
   local bufnr = vim.api.nvim_win_get_buf(context.winid)
-  local opts = context.opts
   local text = vim.api.nvim_buf_get_lines(bufnr, 0, 1, true)[1]
   local ns = vim.api.nvim_create_namespace("DressingHighlight")
   local highlights = {}
@@ -201,6 +201,8 @@ M.trigger_completion = function()
   end
 end
 
+---@return integer
+---@return boolean
 local function create_or_update_win(config, prompt, opts)
   local parent_win = 0
   local winopt
@@ -260,8 +262,7 @@ local function create_or_update_win(config, prompt, opts)
     -- Make sure the previous on_confirm callback is called with nil
     vim.schedule(context.on_confirm)
     vim.api.nvim_win_set_config(context.winid, winopt)
-    local start_in_insert = context.start_in_insert
-    return context.winid, start_in_insert
+    return context.winid, context.start_in_insert
   else
     local start_in_insert = string.sub(vim.api.nvim_get_mode().mode, 1, 1) == "i"
     local bufnr = vim.api.nvim_create_buf(false, true)

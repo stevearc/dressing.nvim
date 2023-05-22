@@ -1,4 +1,4 @@
 #!/bin/bash
 set -e
-luacheck .
-stylua --check .
+luacheck lua tests
+stylua --check lua tests
