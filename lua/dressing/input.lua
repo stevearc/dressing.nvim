@@ -193,8 +193,6 @@ M.completefunc = function(findstart, base)
   end
 end
 
-_G.dressing_input_complete = M.completefunc
-
 M.trigger_completion = function()
   if vim.fn.pumvisible() == 1 then
     return "<C-n>"
@@ -356,8 +354,8 @@ setmetatable(M, {
     -- Disable mini.nvim completion if installed
     vim.api.nvim_buf_set_var(bufnr, "minicompletion_disable", true)
     if opts.completion then
-      vim.bo[bufnr].completefunc = "v:lua.dressing_input_complete"
-      vim.bo[bufnr].omnifunc = "v:lua.dressing_input_complete"
+      vim.bo[bufnr].completefunc = "v:lua.require'dressing.input'.completefunc"
+      vim.bo[bufnr].omnifunc = "v:lua.require'dressing.input'.completefunc"
       -- Only set up <Tab> user completion if cmp is not active
       if not has_cmp or not pcall(require, "cmp_omni") then
         vim.keymap.set("i", "<Tab>", M.trigger_completion, { buffer = bufnr, expr = true })
