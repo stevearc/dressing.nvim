@@ -67,6 +67,11 @@ M.select = function(config, items, opts, on_choice)
   local finders = require("telescope.finders")
   local conf = require("telescope.config").values
 
+  -- schedule_wrap because closing the windows is deferred
+  -- See https://github.com/nvim-telescope/telescope.nvim/pull/2336
+  -- And we only want to dispatch the callback when we're back in the original win
+  on_choice = vim.schedule_wrap(on_choice)
+
   local entry_maker = function(item)
     local formatted = opts.format_item(item)
     return {
