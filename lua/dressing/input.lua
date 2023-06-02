@@ -96,7 +96,18 @@ local function confirm(text)
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
   -- deleted from the buffer after the input window closes.
   vim.defer_fn(function()
-    pcall(vim.api.nvim_win_close, ctx.winid, true)
+    local ok, err = pcall(vim.api.nvim_win_close, ctx.winid, true)
+    -- If we couldn't close the window because we're in the cmdline,
+    -- try again after WinLeave
+    if not ok and err and err:match("^E11:") then
+      local winid = ctx.winid
+      vim.api.nvim_create_autocmd("WinLeave", {
+        callback = vim.schedule_wrap(function()
+          pcall(vim.api.nvim_win_close, winid, true)
+        end),
+        once = true,
+      })
+    end
     if text and history[#history] ~= text then
       table.insert(history, text)
     end

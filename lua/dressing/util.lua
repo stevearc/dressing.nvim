@@ -161,6 +161,9 @@ M._on_win_closed = function(winid)
 end
 
 M.schedule_wrap_before_vimenter = function(func)
+  if vim.g.is_test then
+    return func
+  end
   return function(...)
     if vim.v.vim_did_enter == 0 then
       return vim.schedule_wrap(func)(...)
