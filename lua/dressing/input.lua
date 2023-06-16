@@ -316,7 +316,7 @@ setmetatable(M, {
       start_in_insert = start_in_insert,
     }
     for option, value in pairs(config.win_options) do
-      vim.wo[winid][option] = value
+      vim.api.nvim_set_option_value(option, value, { scope = "local", win = winid })
     end
     local bufnr = vim.api.nvim_win_get_buf(winid)
 

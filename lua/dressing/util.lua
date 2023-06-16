@@ -136,7 +136,11 @@ M.add_title_to_win = function(winid, title, opts)
       noautocmd = true,
     })
     winid_map[winid] = title_winid
-    vim.wo[title_winid].winblend = vim.wo[winid].winblend
+    vim.api.nvim_set_option_value(
+      "winblend",
+      vim.wo[winid].winblend,
+      { scope = "local", win = title_winid }
+    )
     vim.bo[bufnr].bufhidden = "wipe"
     vim.cmd(string.format(
       [[

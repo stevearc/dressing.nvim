@@ -75,10 +75,8 @@ M.select = function(config, items, opts, on_choice)
   end
   winopt = config.override(winopt) or winopt
   local winid = vim.api.nvim_open_win(bufnr, true, winopt)
-  vim.wo[winid].cursorline = true
-  vim.wo[winid].cursorlineopt = "both"
   for option, value in pairs(config.win_options) do
-    vim.wo[winid][option] = value
+    vim.api.nvim_set_option_value(option, value, { scope = "local", win = winid })
   end
   vim.bo[bufnr].filetype = "DressingSelect"
   if vim.fn.has("nvim-0.9") == 0 then

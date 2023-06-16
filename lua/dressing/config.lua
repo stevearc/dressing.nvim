@@ -129,6 +129,8 @@ local default_config = {
       win_options = {
         -- Window transparency (0-100)
         winblend = 10,
+        cursorline = true,
+        cursorlineopt = "both",
       },
 
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
