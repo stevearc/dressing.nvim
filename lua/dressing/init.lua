@@ -4,11 +4,18 @@ local M = {}
 
 M.setup = function(opts)
   require("dressing.config").update(opts)
-  patch.all()
+  M.patch()
 end
 
 ---Patch all the vim.ui methods
 M.patch = function()
+  if vim.fn.has("nvim-0.8") == 0 then
+    vim.notify_once(
+      "dressing has dropped support for Neovim <0.8. Please use the nvim-0.7 branch or upgrade Neovim",
+      vim.log.levels.ERROR
+    )
+    return
+  end
   patch.all()
 end
 

@@ -22,7 +22,7 @@ options in the functions. Customization will be done entirely using a separate
 
 ## Requirements
 
-Neovim 0.7.0+ (for earlier versions, use the [nvim-0.5 branch](https://github.com/stevearc/dressing.nvim/tree/nvim-0.5))
+Neovim 0.8.0+ (for earlier versions, use the [nvim-0.7](https://github.com/stevearc/dressing.nvim/tree/nvim-0.7) or [nvim-0.5](https://github.com/stevearc/dressing.nvim/tree/nvim-0.5) branch)
 
 ## Screenshots
 
