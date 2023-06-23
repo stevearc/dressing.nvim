@@ -298,9 +298,16 @@ require('dressing').setup({
 ## Highlights
 
 A common way to adjust the highlighting of just the dressing windows is by
-providing a `winhighlight` option in the config. For example, `winhighlight = 'NormalFloat:DiagnosticError'`
-would change the default text color in the dressing windows. See `:help winhighlight`
-for more details.
+providing a `winhighlight` option in the config. See `:help winhighlight`
+for more details. Example:
+
+```lua
+require('dressing').setup({
+  input = {
+    winhighlight = 'NormalFloat:DiagnosticError'
+  }
+})
+```
 
 ## Advanced configuration
 
