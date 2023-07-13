@@ -30,6 +30,14 @@ local function clear_callback()
   _items = {}
 end
 
+local function close_window()
+  local callback = _callback
+  local items = _items
+  clear_callback()
+  vim.api.nvim_win_close(0, true)
+  return callback, items
+end
+
 M.select = function(config, items, opts, on_choice)
   if vim.fn.hlID("DressingSelectText") ~= 0 then
     vim.notify(
@@ -47,10 +55,19 @@ M.select = function(config, items, opts, on_choice)
   end
   local lines = {}
   local max_width = 1
-  for _, item in ipairs(items) do
+  for idx, item in ipairs(items) do
     local line = opts.format_item(item)
     max_width = math.max(max_width, vim.api.nvim_strwidth(line))
     table.insert(lines, line)
+
+    vim.api.nvim_buf_set_keymap(bufnr, "n", tostring(idx), "", {
+      callback = function()
+        print(0)
+        local callback, items = close_window()
+        local item = items[idx]
+        callback(item, idx)
+      end,
+    })
   end
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
   vim.bo[bufnr].modifiable = false
@@ -92,14 +109,6 @@ M.select = function(config, items, opts, on_choice)
     once = true,
     callback = M.cancel,
   })
-end
-
-local function close_window()
-  local callback = _callback
-  local items = _items
-  clear_callback()
-  vim.api.nvim_win_close(0, true)
-  return callback, items
 end
 
 M.choose = function()
