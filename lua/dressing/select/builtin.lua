@@ -56,7 +56,7 @@ M.select = function(config, items, opts, on_choice)
   local lines = {}
   local max_width = 1
   for idx, item in ipairs(items) do
-    local line = opts.format_item(item)
+    local line = "[" .. idx .. "] " .. opts.format_item(item)
     max_width = math.max(max_width, vim.api.nvim_strwidth(line))
     table.insert(lines, line)
 
