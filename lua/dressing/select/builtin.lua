@@ -62,7 +62,6 @@ M.select = function(config, items, opts, on_choice)
 
     vim.api.nvim_buf_set_keymap(bufnr, "n", tostring(idx), "", {
       callback = function()
-        print(0)
         local callback, items = close_window()
         local item = items[idx]
         callback(item, idx)
