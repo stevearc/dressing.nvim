@@ -11,7 +11,14 @@ M.select = function(config, items, opts, on_choice)
     ui_select.register(config, true)
     ui_select.deregister(nil, true, true)
   end
-  return ui_select.ui_select(items, opts, on_choice)
+  -- Defer the callback to allow the mode to fully switch back to normal after the fzf terminal
+  local deferred_on_choice = function(...)
+    local args = vim.F.pack_len(...)
+    vim.defer_fn(function()
+      on_choice(vim.F.unpack_len(args))
+    end, 1)
+  end
+  return ui_select.ui_select(items, opts, deferred_on_choice)
 end
 
 return M
