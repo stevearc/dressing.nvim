@@ -246,7 +246,7 @@ local function create_or_update_win(config, prompt, opts)
   end
   -- Then recalculate to clamp final value to min/max
   local width = util.calculate_width(config.relative, prefer_width, config, parent_win)
-  winopt.row = util.calculate_row(config.relative, 1, parent_win)
+  winopt.row = util.calculate_row(config.relative, config.anchor, 1, parent_win)
   winopt.col = util.calculate_col(config.relative, width, parent_win)
   winopt.width = width
 

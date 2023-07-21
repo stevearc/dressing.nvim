@@ -66,9 +66,13 @@ M.calculate_col = function(relative, width, winid)
   end
 end
 
-M.calculate_row = function(relative, height, winid)
+M.calculate_row = function(relative, anchor, height, winid)
   if relative == "cursor" then
-    return 0
+    if (anchor == "NW") or (anchor == "NE") then
+      return 1
+    else
+      return 0
+    end
   else
     return math.floor((get_max_height(relative, winid) - height) / 2)
   end
