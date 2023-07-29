@@ -229,7 +229,7 @@ local function create_or_update_win(config, prompt, opts)
   else
     winopt = {
       relative = config.relative,
-      anchor = config.anchor,
+      anchor = "SW",
       border = config.border,
       height = 1,
       style = "minimal",

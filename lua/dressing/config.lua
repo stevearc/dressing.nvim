@@ -16,7 +16,6 @@ local default_config = {
     start_in_insert = true,
 
     -- These are passed to nvim_open_win
-    anchor = "SW",
     border = "rounded",
     -- 'editor' and 'win' will default to being centered
     relative = "cursor",
@@ -120,7 +119,6 @@ local default_config = {
     -- Options for built-in selector
     builtin = {
       -- These are passed to nvim_open_win
-      anchor = "NW",
       border = "rounded",
       -- 'editor' and 'win' will default to being centered
       relative = "editor",
@@ -169,6 +167,13 @@ local M = vim.deepcopy(default_config)
 
 M.update = function(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
+
+  if newconf.input.anchor or newconf.select.builtin.anchor then
+    vim.notify(
+      "Deprecated: dressing no longer accepts an 'anchor' option. Use the 'override' function to change the anchor",
+      vim.log.levels.WARN
+    )
+  end
 
   for k, v in pairs(newconf) do
     M[k] = v
