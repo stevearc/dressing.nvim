@@ -170,38 +170,6 @@ local M = vim.deepcopy(default_config)
 M.update = function(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
-  if
-    newconf.input.row
-    or newconf.input.col
-    or newconf.select.builtin.row
-    or newconf.select.builtin.col
-  then
-    vim.notify(
-      "Deprecated: Dressing row and col are no longer used. Use the override to customize layout (:help dressing)",
-      vim.log.levels.WARN
-    )
-  end
-
-  if
-    newconf.select.telescope
-    and newconf.select.telescope.theme
-    and vim.tbl_count(newconf.select.telescope) == 1
-  then
-    vim.notify(
-      "Deprecated: dressing.select.telescope.theme is deprecated. Pass in telescope options directly (:help dressing)",
-      vim.log.levels.WARN
-    )
-    local theme = newconf.select.telescope.theme
-    local ttype = type(theme)
-    if ttype == "string" then
-      newconf.select.telescope = require("telescope.themes")[string.format("get_%s", theme)]()
-    elseif ttype == "function" then
-      newconf.select.telescope = theme({})
-    else
-      newconf.select.telescope = theme
-    end
-  end
-
   for k, v in pairs(newconf) do
     M[k] = v
   end
