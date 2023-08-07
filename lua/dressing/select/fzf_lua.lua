@@ -16,7 +16,7 @@ M.select = function(config, items, opts, on_choice)
     local args = vim.F.pack_len(...)
     vim.defer_fn(function()
       on_choice(vim.F.unpack_len(args))
-    end, 1)
+    end, 10)
   end
   return ui_select.ui_select(items, opts, deferred_on_choice)
 end
