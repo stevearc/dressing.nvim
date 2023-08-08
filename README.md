@@ -302,7 +302,9 @@ for more details. Example:
 ```lua
 require('dressing').setup({
   input = {
-    winhighlight = 'NormalFloat:DiagnosticError'
+    win_options = {
+      winhighlight = 'NormalFloat:DiagnosticError'
+    }
   }
 })
 ```
