@@ -1,5 +1,27 @@
 # Changelog
 
+## [2.0.0](https://github.com/stevearc/dressing.nvim/compare/v1.0.0...v2.0.0) (2023-08-08)
+
+
+### ⚠ BREAKING CHANGES
+
+* deprecate the "anchor" config option ([#106](https://github.com/stevearc/dressing.nvim/issues/106))
+
+### Features
+
+* built-in select implementation binds number keymaps ([#104](https://github.com/stevearc/dressing.nvim/issues/104)) ([cc69bfe](https://github.com/stevearc/dressing.nvim/commit/cc69bfed36863a2ffdf1b9c4fd2ed59445a51629))
+
+
+### Bug Fixes
+
+* inconsistent mode after selecting with fzf-lua ([3961185](https://github.com/stevearc/dressing.nvim/commit/39611852fd7bbac117e939a26759bb37361f0c90))
+* increase buffer time for fzf-lua mode switching ([713b56e](https://github.com/stevearc/dressing.nvim/commit/713b56e13c58ad519920e0e634763345cb4fc832))
+
+
+### Code Refactoring
+
+* deprecate the "anchor" config option ([#106](https://github.com/stevearc/dressing.nvim/issues/106)) ([bcaf0d3](https://github.com/stevearc/dressing.nvim/commit/bcaf0d3d6e5cc6e8ecb8df3a7df7d98c567d36e6))
+
 ## 1.0.0 (2023-06-26)
 
 
