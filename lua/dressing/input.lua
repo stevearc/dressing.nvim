@@ -261,7 +261,7 @@ local function create_or_update_win(config, prompt, opts)
     end
   end
   if vim.fn.has("nvim-0.9") == 1 then
-    winopt.title = prompt:gsub("^%s*(.-)%s*$", "%1")
+    winopt.title = prompt:gsub("^%s*(.-)%s*$", " %1 ")
     -- We used to use "prompt_align" here
     winopt.title_pos = config.prompt_align or config.title_pos
   end

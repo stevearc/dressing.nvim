@@ -86,7 +86,7 @@ M.select = function(config, items, opts, on_choice)
     style = "minimal",
   }
   if vim.fn.has("nvim-0.9") == 1 then
-    winopt.title = opts.prompt
+    winopt.title = opts.prompt:gsub("^%s*(.-)%s*$", " %1 ")
     winopt.title_pos = config.title_pos or "center"
   end
   winopt = config.override(winopt) or winopt
