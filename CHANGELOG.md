@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.0.1](https://github.com/stevearc/dressing.nvim/compare/v2.0.0...v2.0.1) (2023-08-13)
+
+
+### Bug Fixes
+
+* restore float title padding for nvim 0.9 ([#109](https://github.com/stevearc/dressing.nvim/issues/109)) ([169877d](https://github.com/stevearc/dressing.nvim/commit/169877dbcae54b23b464b219e053e92854bbb37f))
+
 ## [2.0.0](https://github.com/stevearc/dressing.nvim/compare/v1.0.0...v2.0.0) (2023-08-08)
 
 
