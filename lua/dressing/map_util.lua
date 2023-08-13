@@ -40,6 +40,7 @@ M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
           end
         end
       end
+      ---@cast rhs string
       vim.keymap.set(mode, lhs, rhs, opts)
     end
   end

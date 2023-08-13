@@ -31,6 +31,15 @@ jobs:
           version: v0.15.2
           args: --check .
 
+  typecheck:
+    name: typecheck
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: stevearc/nvim-typecheck-action@v1
+        with:
+          path: lua
+
   run_tests:
     strategy:
       matrix:
@@ -58,6 +67,7 @@ jobs:
     needs:
       - luacheck
       - stylua
+      - typecheck
       - run_tests
     runs-on: ubuntu-latest
     steps:
