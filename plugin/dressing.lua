@@ -1,2 +1,4 @@
 require("dressing").patch()
-vim.cmd([[highlight default link FloatTitle FloatBorder]])
+vim.api.nvim_set_hl(0, "DressingSelectIdx", {
+  link = "Special",
+})

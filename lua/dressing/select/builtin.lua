@@ -54,9 +54,12 @@ M.select = function(config, items, opts, on_choice)
     vim.bo[bufnr][k] = v
   end
   local lines = {}
+  local highlights = {}
   local max_width = 1
   for idx, item in ipairs(items) do
-    local line = "[" .. idx .. "] " .. opts.format_item(item)
+    local prefix = "[" .. idx .. "] "
+    table.insert(highlights, { #lines, prefix:len() })
+    local line = prefix .. opts.format_item(item)
     max_width = math.max(max_width, vim.api.nvim_strwidth(line))
     table.insert(lines, line)
 
@@ -70,6 +73,11 @@ M.select = function(config, items, opts, on_choice)
   end
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
   vim.bo[bufnr].modifiable = false
+  local ns = vim.api.nvim_create_namespace("DressingSelect")
+  for _, hl in ipairs(highlights) do
+    local lnum, end_col = unpack(hl)
+    vim.api.nvim_buf_add_highlight(bufnr, ns, "DressingSelectIdx", lnum, 0, end_col)
+  end
   local width = util.calculate_width(config.relative, max_width, config, 0)
   local height = util.calculate_height(config.relative, #lines, config, 0)
   local row = util.calculate_row(config.relative, height, 0)
