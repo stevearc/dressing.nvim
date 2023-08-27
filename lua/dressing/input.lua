@@ -4,6 +4,22 @@ local patch = require("dressing.patch")
 local util = require("dressing.util")
 local M = {}
 
+---@class (exact) dressing.InputContext
+---@field opts? dressing.InputOptions
+---@field on_confirm? fun(text?: string)
+---@field winid? integer
+---@field history_idx? integer
+---@field history_tip? string
+---@field start_in_insert? boolean
+
+---@class (exact) dressing.InputOptions
+---@field prompt? string
+---@field default? string
+---@field completion? string
+---@field highlight? string|fun(text: string): any[][]
+---@field cancelreturn? string
+
+---@type dressing.InputContext
 local context = {
   opts = nil,
   on_confirm = nil,
