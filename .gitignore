@@ -39,5 +39,8 @@ luac.out
 *.x86_64
 *.hex
 
+.direnv/
 .testenv/
 doc/tags
+scripts/nvim_doc_tools
+scripts/nvim-typecheck-action

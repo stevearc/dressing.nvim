@@ -127,7 +127,7 @@ If you're fine with the defaults, you're good to go after installation. If you
 want to tweak, call this function:
 
 ```lua
-require('dressing').setup({
+require("dressing").setup({
   input = {
     -- Set to false to disable the vim.ui.input implementation
     enabled = true,
