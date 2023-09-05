@@ -57,19 +57,22 @@ M.select = function(config, items, opts, on_choice)
   local highlights = {}
   local max_width = 1
   for idx, item in ipairs(items) do
-    local prefix = "[" .. idx .. "] "
-    table.insert(highlights, { #lines, prefix:len() })
+    local prefix = ""
+    if config.show_numbers then
+      prefix = "[" .. idx .. "] "
+      table.insert(highlights, { #lines, prefix:len() })
+
+      vim.api.nvim_buf_set_keymap(bufnr, "n", tostring(idx), "", {
+        callback = function()
+          local callback, local_items = close_window()
+          local target_item = local_items[idx]
+          callback(target_item, idx)
+        end,
+      })
+    end
     local line = prefix .. opts.format_item(item)
     max_width = math.max(max_width, vim.api.nvim_strwidth(line))
     table.insert(lines, line)
-
-    vim.api.nvim_buf_set_keymap(bufnr, "n", tostring(idx), "", {
-      callback = function()
-        local callback, local_items = close_window()
-        local target_item = local_items[idx]
-        callback(target_item, idx)
-      end,
-    })
   end
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
   vim.bo[bufnr].modifiable = false
