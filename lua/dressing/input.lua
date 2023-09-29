@@ -190,23 +190,15 @@ local function apply_highlight()
   end
 end
 
-local function split(string, pattern)
-  local ret = {}
-  for token in string.gmatch(string, "[^" .. pattern .. "]+") do
-    table.insert(ret, token)
-  end
-  return ret
-end
-
 M.completefunc = function(findstart, base)
-  if not context.opts or not context.opts.completion then
+  local completion = context.opts and context.opts.completion
+  if not completion then
     return findstart == 1 and 0 or {}
   end
   if findstart == 1 then
     return 0
   else
-    local completion = context.opts.completion
-    local pieces = split(completion, ",")
+    local pieces = vim.split(completion, ",", { plain = true })
     if pieces[1] == "custom" or pieces[1] == "customlist" then
       local vimfunc = pieces[2]
       local ret
@@ -224,7 +216,7 @@ M.completefunc = function(findstart, base)
         ret = vim.fn[vimfunc](base, base, vim.fn.strlen(base))
       end
       if pieces[1] == "custom" then
-        ret = split(ret, "\n")
+        ret = vim.split(ret, "\n", { plain = true })
       end
       return ret
     else
