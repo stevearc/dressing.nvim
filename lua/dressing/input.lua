@@ -146,7 +146,28 @@ M.close = function()
   confirm(context.opts and context.opts.cancelreturn)
 end
 
-M.highlight = function()
+---Ensure that the input only has a single line
+local function remove_extra_lines()
+  local winid = context.winid
+  if not winid or not vim.api.nvim_win_is_valid(winid) then
+    return
+  end
+  local bufnr = vim.api.nvim_win_get_buf(winid)
+  local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, true)
+  if #lines == 1 then
+    return
+  end
+  while #lines > 1 do
+    if lines[1]:match("^%s*$") then
+      table.remove(lines, 1)
+    else
+      table.remove(lines)
+    end
+  end
+  vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, lines)
+end
+
+local function apply_highlight()
   local opts = context.opts
   if not opts then
     return
@@ -366,7 +387,10 @@ setmetatable(M, {
     vim.api.nvim_create_autocmd({ "TextChanged", "TextChangedI" }, {
       desc = "Update highlights",
       buffer = bufnr,
-      callback = M.highlight,
+      callback = function()
+        remove_extra_lines()
+        apply_highlight()
+      end,
     })
 
     -- Configure nvim-cmp if installed
@@ -402,7 +426,7 @@ setmetatable(M, {
       vim.cmd("startinsert!")
     end
     close_completion_window()
-    M.highlight()
+    apply_highlight()
   end),
 })
 
