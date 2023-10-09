@@ -2,7 +2,7 @@ local M = {}
 
 M.create_plug_maps = function(bufnr, plug_bindings)
   for _, binding in ipairs(plug_bindings) do
-    vim.keymap.set("", binding.plug, binding.rhs, { buffer = bufnr, desc = binding.desc })
+    vim.keymap.set("", binding.plug, binding.rhs, { buffer = bufnr, desc = binding.desc, nowait = true })
   end
 end
 
@@ -17,7 +17,7 @@ M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
   end
   for lhs, rhs in pairs(bindings) do
     if rhs then
-      local opts = { buffer = bufnr, remap = true }
+      local opts = { buffer = bufnr, remap = true, nowait = true }
       if type(rhs) == "table" then
         for k, v in pairs(rhs) do
           if type(k) == "string" then
