@@ -1,5 +1,5 @@
-local map_util = require("dressing.map_util")
 local global_config = require("dressing.config")
+local map_util = require("dressing.map_util")
 local patch = require("dressing.patch")
 local util = require("dressing.util")
 local M = {}
