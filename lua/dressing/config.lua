@@ -30,8 +30,6 @@ local default_config = {
 
     buf_options = {},
     win_options = {
-      -- Window transparency (0-100)
-      winblend = 10,
       -- Disable line wrapping
       wrap = false,
       -- Indicator for when text exceeds window
@@ -108,7 +106,7 @@ local default_config = {
         filetype = "DressingSelect",
       },
       win_options = {
-        winblend = 10,
+        winblend = 0,
       },
       max_width = 80,
       max_height = 40,
@@ -127,8 +125,6 @@ local default_config = {
 
       buf_options = {},
       win_options = {
-        -- Window transparency (0-100)
-        winblend = 10,
         cursorline = true,
         cursorlineopt = "both",
       },
