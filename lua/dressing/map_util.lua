@@ -33,18 +33,15 @@ M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
         end
       end
       -- Prefix with <Plug> unless this is a <Cmd> or :Cmd mapping
-      if type(rhs) == "string" and not rhs:match("[<:]") then
-        rhs = "<Plug>" .. prefix .. rhs
-      end
-      if mode == "i" then
-        -- HACK for some reason I can't get plug mappings to work in insert mode
-        for _, map in ipairs(maps) do
-          if map.lhs == rhs then
-            rhs = map.callback or map.rhs
-            break
-          end
+      if type(rhs) == "string" then
+        if not rhs:match("[<:]") then
+          rhs = "<Plug>" .. prefix .. rhs
+        end
+        if mode == "i" then
+          rhs = "<C-o>" .. rhs
         end
       end
+
       ---@cast rhs string
       vim.keymap.set(mode, lhs, rhs, opts)
     end
