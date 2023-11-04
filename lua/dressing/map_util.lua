@@ -35,7 +35,9 @@ M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
       -- Prefix with <Plug> unless this is a <Cmd> or :Cmd mapping
       if type(rhs) == "string" then
         if not rhs:match("[<:]") then
-          rhs = "<Plug>" .. prefix .. rhs
+          rhs = "<Plug>" .. prefix .. rhs .. "<CR>"
+        else
+          rhs = rhs .. "<CR>"
         end
         if mode == "i" then
           rhs = "<C-o>" .. rhs
