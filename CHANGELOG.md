@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.1.0](https://github.com/stevearc/dressing.nvim/compare/v2.0.1...v2.1.0) (2023-11-07)
+
+
+### Features
+
+* add highlight group for builtin select index ([#113](https://github.com/stevearc/dressing.nvim/issues/113)) ([ee57150](https://github.com/stevearc/dressing.nvim/commit/ee571505f3566f84fd252e76c4ce6df6eaf2fb94))
+* config option to disable numbers for builtin select implementation ([#117](https://github.com/stevearc/dressing.nvim/issues/117)) ([15ef9a3](https://github.com/stevearc/dressing.nvim/commit/15ef9a398c81ec9b98ec95feb74bad9d12ac474c))
+* support multiline prompt in vim.ui.input ([#89](https://github.com/stevearc/dressing.nvim/issues/89)) ([8f4d62b](https://github.com/stevearc/dressing.nvim/commit/8f4d62b7817455896a3c73cab642002072c114bc))
+
+
+### Bug Fixes
+
+* apply nowait to plugin keymaps ([#120](https://github.com/stevearc/dressing.nvim/issues/120)) ([70fcf2a](https://github.com/stevearc/dressing.nvim/commit/70fcf2a33c55e76854a9b3d2e3338a6526fd56f5))
+* input can only accept a single line ([#119](https://github.com/stevearc/dressing.nvim/issues/119)) ([0c7acd7](https://github.com/stevearc/dressing.nvim/commit/0c7acd71943c7e56deb0c8381700e9b3fa2ad21a))
+* remove default window transparency ([1f2d120](https://github.com/stevearc/dressing.nvim/commit/1f2d1206a03bd3add8aedf6251e4534611de577f))
+* **telescope:** codeactions error in Neovim nightly ([#126](https://github.com/stevearc/dressing.nvim/issues/126)) ([fe30713](https://github.com/stevearc/dressing.nvim/commit/fe3071330a0720ce3695ac915820c8134b22d1b0))
+
 ## [2.0.1](https://github.com/stevearc/dressing.nvim/compare/v2.0.0...v2.0.1) (2023-08-13)
 
 
