@@ -24,7 +24,12 @@ M.custom_kind = {
     local text_width = 1
     local idx_width = 1
     for idx, item in ipairs(items) do
-      local client_id = item[1]
+      local client_id
+      if vim.fn.has("nvim-0.10") == 1 then
+        client_id = item.ctx.client_id
+      else
+        client_id = item[1]
+      end
       local client_name = vim.lsp.get_client_by_id(client_id).name
       local text = opts.format_item(item)
 
