@@ -24,6 +24,13 @@ M.select = function(config, items, opts, on_choice)
     }
   end
 
+  local callback
+  callback = function(...)
+    on_choice(...)
+    -- Prevent double-calls
+    callback = function() end
+  end
+
   local border = vim.deepcopy(config.border)
   border.text = {
     top = opts.prompt,
@@ -48,10 +55,12 @@ M.select = function(config, items, opts, on_choice)
       submit = { "<CR>" },
     },
     on_close = function()
-      on_choice(nil, nil)
+      vim.schedule(function()
+        callback(nil, nil)
+      end)
     end,
     on_submit = function(item)
-      on_choice(item.value, item.idx)
+      callback(item.value, item.idx)
     end,
   })
 
