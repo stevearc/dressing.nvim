@@ -251,6 +251,17 @@ local function get_max_strwidth(lines)
   return max
 end
 
+---@param title string
+---@param trim_colon boolean input.trim_prompt config
+---@return string
+local function trim_and_pad_title(title, trim_colon)
+  title = vim.trim(title)
+  if trim_colon then
+    title = title:gsub(":$", "")
+  end
+  return (" %s "):format(title)
+end
+
 ---@param config table
 ---@param prompt_lines string[]
 ---@param default? string
@@ -308,7 +319,7 @@ local function create_or_update_win(config, prompt_lines, default)
     end
   end
   if vim.fn.has("nvim-0.9") == 1 and #prompt_lines == 1 then
-    winopt.title = prompt_lines[1]:gsub("^%s*(.-)%s*$", " %1 ")
+    winopt.title = trim_and_pad_title(prompt_lines[1], config.trim_prompt)
     -- We used to use "prompt_align" here
     winopt.title_pos = config.prompt_align or config.title_pos
   end
@@ -440,7 +451,7 @@ local function show_input(opts, on_confirm)
   if vim.fn.has("nvim-0.9") == 0 and #prompt_lines == 1 then
     util.add_title_to_win(
       winid,
-      string.gsub(prompt_lines[1], "^%s*(.-)%s*$", "%1"),
+      trim_and_pad_title(prompt_lines[1], config.trim_prompt),
       { align = config.prompt_align }
     )
   end
