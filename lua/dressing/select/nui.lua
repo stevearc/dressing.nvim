@@ -8,7 +8,7 @@ M.select = function(config, items, opts, on_choice)
   local Menu = require("nui.menu")
   local event = require("nui.utils.autocmd").event
   local lines = {}
-  local line_width = 1
+  local line_width = opts.prompt and vim.api.nvim_strwidth(opts.prompt) or 1
   for i, item in ipairs(items) do
     local line = opts.format_item(item)
     line_width = math.max(line_width, vim.api.nvim_strwidth(line))

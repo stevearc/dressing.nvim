@@ -55,7 +55,7 @@ M.select = function(config, items, opts, on_choice)
   end
   local lines = {}
   local highlights = {}
-  local max_width = 1
+  local max_width = opts.prompt and vim.api.nvim_strwidth(opts.prompt) or 1
   for idx, item in ipairs(items) do
     local prefix = ""
     if config.show_numbers then
