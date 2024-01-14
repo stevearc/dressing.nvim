@@ -33,7 +33,7 @@ M.select = function(config, items, opts, on_choice)
     local item = items[lnum]
     on_choice(item, lnum)
   end
-  vim.fn["dressing#fzf_run"](labels, string.format('--prompt="%s"', opts.prompt), config.window)
+  vim.fn["dressing#fzf_run"](labels, string.format('--prompt="%s "', opts.prompt), config.window)
   -- fzf doesn't have a cancel callback, so we have to make one.
   vim.cmd([[autocmd TermClose <buffer> ++once lua require('dressing.select.fzf')._on_term_close()]])
 end
