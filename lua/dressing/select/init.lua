@@ -1,8 +1,12 @@
 local global_config = require("dressing.config")
 local patch = require("dressing.patch")
 
-local function get_backend(config)
-  local backends = config.backend
+local M = {}
+
+---@param backends string|string[]
+---@return table select module
+---@return string name of backend
+M.get_backend = function(backends)
   if type(backends) ~= "table" then
     backends = { backends }
   end
@@ -29,7 +33,7 @@ end
 -- (see https://github.com/stevearc/dressing.nvim/issues/15)
 -- also to prevent focus problems for providers
 -- (see https://github.com/stevearc/dressing.nvim/issues/59)
-return vim.schedule_wrap(function(items, opts, on_choice)
+local select = vim.schedule_wrap(function(items, opts, on_choice)
   vim.validate({
     items = {
       items,
@@ -64,7 +68,7 @@ return vim.schedule_wrap(function(items, opts, on_choice)
     opts.format_item = sanitize_line
   end
 
-  local backend, name = get_backend(config)
+  local backend, name = M.get_backend(config.backend)
   local winid = vim.api.nvim_get_current_win()
   local cursor = vim.api.nvim_win_get_cursor(winid)
   backend.select(
@@ -79,3 +83,11 @@ return vim.schedule_wrap(function(items, opts, on_choice)
     end)
   )
 end)
+
+setmetatable(M, {
+  __call = function(_, ...)
+    return select(...)
+  end,
+})
+
+return M

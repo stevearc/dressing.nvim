@@ -10,14 +10,20 @@ end
 local enabled_mods = {}
 M.original_mods = {}
 
+---@param key string
+---@return boolean?
+M.is_enabled = function(key)
+  local enabled = enabled_mods[key]
+  if enabled == nil then
+    enabled = require("dressing.config")[key].enabled
+  end
+  return enabled
+end
+
 for _, key in ipairs(all_modules) do
   M.original_mods[key] = vim.ui[key]
   vim.ui[key] = function(...)
-    local enabled = enabled_mods[key]
-    if enabled == nil then
-      enabled = require("dressing.config")[key].enabled
-    end
-    if enabled then
+    if M.is_enabled(key) then
       require(string.format("dressing.%s", key))(...)
     else
       return M.original_mods[key](...)
