@@ -393,7 +393,7 @@ end
 
 ---@param opts string|dressing.InputOptions
 ---@param on_confirm fun(text?: string)
-local function show_input(opts, on_confirm)
+local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   vim.validate({
     on_confirm = { on_confirm, "function", false },
   })
@@ -499,7 +499,7 @@ local function show_input(opts, on_confirm)
   end
   close_completion_window()
   apply_highlight()
-end
+end)
 
 setmetatable(M, {
   -- use schedule_wrap to avoid a bug when vim opens

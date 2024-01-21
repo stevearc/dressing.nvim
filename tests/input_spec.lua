@@ -122,16 +122,24 @@ a.describe("input modal", function()
     assert(not startinsert_called, "Got 'true' expected 'false'")
   end)
 
-  a.it("cancels first callback if second input is opened", function()
-    local tx, rx = channel.oneshot()
-    vim.ui.input({}, tx)
+  a.it("queues successive calls to vim.ui.input", function()
+    local tx1, rx1 = channel.oneshot()
+    local tx2, rx2 = channel.oneshot()
+    vim.ui.input({}, tx1)
+    vim.ui.input({}, tx2)
     util.feedkeys({
       "i", -- HACK have to do this because :startinsert doesn't work in tests,
-      "my text",
+      "first text<CR>",
     })
-    vim.ui.input({}, function() end)
-    local ret = rx()
-    assert(ret == nil, string.format("Got '%s' expected nil", ret))
+    local ret = rx1()
+    assert(ret == "first text", string.format("Got '%s' expected 'first text'", ret))
+    a.util.sleep(10)
+    util.feedkeys({
+      "i", -- HACK have to do this because :startinsert doesn't work in tests,
+      "second text<CR>",
+    })
+    ret = rx2()
+    assert(ret == "second text", string.format("Got '%s' expected 'second text'", ret))
   end)
 
   a.it("supports completion", function()

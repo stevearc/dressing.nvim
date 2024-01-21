@@ -177,4 +177,38 @@ M.schedule_wrap_before_vimenter = function(func)
   end
 end
 
+---Wrap an async function so that if called multiple times only one will execute concurrently
+---@param callback_arg_num integer The position of the callback argument in the function
+---@param fn function
+M.make_queued_async_fn = function(callback_arg_num, fn)
+  local queue = {}
+  local consuming = false
+
+  local function consume()
+    if #queue == 0 then
+      consuming = false
+      return
+    end
+    consuming = true
+    local args = table.remove(queue, 1)
+    fn(vim.F.unpack_len(args))
+  end
+
+  return function(...)
+    local args = vim.F.pack_len(...)
+    local cb = args[callback_arg_num]
+    args[callback_arg_num] = function(...)
+      local cb_args = vim.F.pack_len(...)
+      vim.schedule(function()
+        cb(vim.F.unpack_len(cb_args))
+        vim.schedule(consume)
+      end)
+    end
+    table.insert(queue, args)
+    if not consuming then
+      consume()
+    end
+  end
+end
+
 return M

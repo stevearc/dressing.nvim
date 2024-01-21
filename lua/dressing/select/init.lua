@@ -1,5 +1,6 @@
 local global_config = require("dressing.config")
 local patch = require("dressing.patch")
+local util = require("dressing.util")
 
 local M = {}
 
@@ -33,7 +34,7 @@ end
 -- (see https://github.com/stevearc/dressing.nvim/issues/15)
 -- also to prevent focus problems for providers
 -- (see https://github.com/stevearc/dressing.nvim/issues/59)
-local select = vim.schedule_wrap(function(items, opts, on_choice)
+local select = vim.schedule_wrap(util.make_queued_async_fn(3, function(items, opts, on_choice)
   vim.validate({
     items = {
       items,
@@ -83,7 +84,7 @@ local select = vim.schedule_wrap(function(items, opts, on_choice)
       on_choice(...)
     end)
   )
-end)
+end))
 
 setmetatable(M, {
   __call = function(_, ...)
