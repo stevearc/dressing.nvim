@@ -52,7 +52,7 @@ local select = vim.schedule_wrap(function(items, opts, on_choice)
   end
 
   opts.prompt = sanitize_line(opts.prompt or "Select one of:")
-  opts.prompt = opts.prompt:gsub(":$", "")
+  opts.prompt = vim.trim(opts.prompt)
   if config.trim_prompt and opts.prompt:sub(-1, -1) == ":" then
     opts.prompt = opts.prompt:sub(1, -2)
   end
