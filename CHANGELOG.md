@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.2.0](https://github.com/stevearc/dressing.nvim/compare/v2.1.0...v2.2.0) (2024-01-21)
+
+
+### Features
+
+* add `trim_prompt` setting for `vim.ui.input` ([#134](https://github.com/stevearc/dressing.nvim/issues/134)) ([48b7134](https://github.com/stevearc/dressing.nvim/commit/48b713413d0b78c21e10df500844ae6178418edd))
+* add checkhealth messages ([c117933](https://github.com/stevearc/dressing.nvim/commit/c1179336aaeca82a785cade27e9b7b276af3222e))
+
+
+### Bug Fixes
+
+* add space after prompt to look nicer ([#136](https://github.com/stevearc/dressing.nvim/issues/136)) ([44a3638](https://github.com/stevearc/dressing.nvim/commit/44a36387210b30a595369f278b5e91f491a3fe7f))
+* handle extra scenario where the prompt is sent with trailing spaces ([#138](https://github.com/stevearc/dressing.nvim/issues/138)) ([7237cdf](https://github.com/stevearc/dressing.nvim/commit/7237cdf25ea9150951f3c7ecbd4537cad7b32a9f))
+* **nui:** prevent double-callback in ui.select ([#131](https://github.com/stevearc/dressing.nvim/issues/131)) ([94b0d24](https://github.com/stevearc/dressing.nvim/commit/94b0d24483d56f3777ee0c8dc51675f21709318c))
+* queue successive calls to input and select ([#139](https://github.com/stevearc/dressing.nvim/issues/139)) ([9de702f](https://github.com/stevearc/dressing.nvim/commit/9de702fa7dc18ad8db7f33fbf1582a8f6993177b))
+* take into account prompt size in nui and builtin selects ([#135](https://github.com/stevearc/dressing.nvim/issues/135)) ([d7dde6a](https://github.com/stevearc/dressing.nvim/commit/d7dde6afff84e440073a2763ee0a22855e118b5f))
+
 ## [2.1.0](https://github.com/stevearc/dressing.nvim/compare/v2.0.1...v2.1.0) (2023-11-07)
 
 
