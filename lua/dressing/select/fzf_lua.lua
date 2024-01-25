@@ -29,9 +29,11 @@ M.select = function(config, items, opts, on_choice)
     once = true,
     nested = true,
     callback = function()
-      local cb = on_choice
-      on_choice = function() end
-      cb()
+      vim.defer_fn(function()
+        local cb = on_choice
+        on_choice = function() end
+        cb()
+      end, 10)
     end,
   })
 end
