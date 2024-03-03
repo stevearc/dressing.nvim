@@ -5,6 +5,9 @@ M.is_supported = function()
 end
 
 M.select = function(config, items, opts, on_choice)
+  if opts.prompt then
+    opts.prompt = opts.prompt .. "> "
+  end
   local ui_select = require("fzf-lua.providers.ui_select")
   if config and not vim.tbl_isempty(config) then
     -- Registering then unregistering sets the config options
