@@ -5,6 +5,16 @@ M.is_supported = function()
 end
 
 M.select = function(config, items, opts, on_choice)
+  if opts.prompt then
+    -- If we're not using ":" as the separator, use ">"
+    if not vim.endswith(opts.prompt, ":") then
+      opts.prompt = opts.prompt .. ">"
+    end
+    -- Ensure there is some whitespace between the prompt and input
+    if not vim.endswith(opts.prompt, " ") then
+      opts.prompt = opts.prompt .. " "
+    end
+  end
   local ui_select = require("fzf-lua.providers.ui_select")
   if config and not vim.tbl_isempty(config) then
     -- Registering then unregistering sets the config options
