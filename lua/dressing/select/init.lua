@@ -1,6 +1,7 @@
 local global_config = require("dressing.config")
 local patch = require("dressing.patch")
 local util = require("dressing.util")
+local islist = vim.islist or vim.tbl_islist
 
 local M = {}
 
@@ -39,7 +40,7 @@ local select = vim.schedule_wrap(util.make_queued_async_fn(3, function(items, op
     items = {
       items,
       function(a)
-        return type(a) == "table" and vim.tbl_islist(a)
+        return type(a) == "table" and islist(a)
       end,
       "list-like table",
     },
