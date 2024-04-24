@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.2.1](https://github.com/stevearc/dressing.nvim/compare/v2.2.0...v2.2.1) (2024-04-24)
+
+
+### Bug Fixes
+
+* **fzf-lua:** add separator after prompt ([#145](https://github.com/stevearc/dressing.nvim/issues/145)) ([18e5beb](https://github.com/stevearc/dressing.nvim/commit/18e5beb3845f085b6a33c24112b37988f3f93c06))
+* **fzf-lua:** canceling selection breaks future invocations of vim.ui.select ([9f9b773](https://github.com/stevearc/dressing.nvim/commit/9f9b77315d559fa09850eb3db621ba6fce3d3d32))
+* **fzf-lua:** not returning selected result ([0e88293](https://github.com/stevearc/dressing.nvim/commit/0e88293ce3459f4bb310125f3366304af6dc7990))
+* refactor deprecated methods in neovim 0.10 ([3858609](https://github.com/stevearc/dressing.nvim/commit/3858609d683ca395ebce2f01d42e031d95a5eccc))
+* undo fzf-lua cancel hack, was fixed upstream ([#142](https://github.com/stevearc/dressing.nvim/issues/142)) ([6f21226](https://github.com/stevearc/dressing.nvim/commit/6f212262061a2120e42da0d1e87326e8a41c0478))
+
 ## [2.2.0](https://github.com/stevearc/dressing.nvim/compare/v2.1.0...v2.2.0) (2024-01-21)
 
 
