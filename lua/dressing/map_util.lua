@@ -40,6 +40,7 @@ M.create_maps_to_plug = function(bufnr, mode, bindings, prefix)
         -- HACK for some reason I can't get plug mappings to work in insert mode
         for _, map in ipairs(maps) do
           if map.lhs == rhs then
+            ---@diagnostic disable-next-line: cast-local-type
             rhs = map.callback or map.rhs
             break
           end

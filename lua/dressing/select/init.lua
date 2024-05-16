@@ -1,6 +1,7 @@
 local global_config = require("dressing.config")
 local patch = require("dressing.patch")
 local util = require("dressing.util")
+---@diagnostic disable-next-line: deprecated
 local islist = vim.islist or vim.tbl_islist
 
 local M = {}

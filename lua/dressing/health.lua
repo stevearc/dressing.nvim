@@ -4,6 +4,7 @@ local patch = require("dressing.patch")
 local M = {}
 
 -- The "report_" functions have been deprecated, so use the new ones if defined.
+---@diagnostic disable: deprecated
 local health_start = vim.health.start or vim.health.report_start
 local health_warn = vim.health.warn or vim.health.report_warn
 local health_ok = vim.health.ok or vim.health.report_ok
