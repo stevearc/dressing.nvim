@@ -200,8 +200,10 @@ M.make_queued_async_fn = function(callback_arg_num, fn)
     args[callback_arg_num] = function(...)
       local cb_args = vim.F.pack_len(...)
       vim.schedule(function()
-        cb(vim.F.unpack_len(cb_args))
+        -- first schedule the consumption, only later invoke
+        -- the callback, because the callback could fail
         vim.schedule(consume)
+        cb(vim.F.unpack_len(cb_args))
       end)
     end
     table.insert(queue, args)
