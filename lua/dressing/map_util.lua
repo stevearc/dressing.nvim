@@ -1,5 +1,7 @@
 local M = {}
 
+---@diagnostic disable: undefined-field
+
 M.create_plug_maps = function(bufnr, plug_bindings)
   for _, binding in ipairs(plug_bindings) do
     vim.keymap.set(
