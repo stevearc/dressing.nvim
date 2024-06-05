@@ -100,6 +100,10 @@ M.select = function(config, items, opts, on_choice)
     winopt.title = opts.prompt:gsub("^%s*(.-)%s*$", " %1 ")
     winopt.title_pos = config.title_pos or "center"
   end
+  if vim.fn.has("nvim-0.10") == 1 then
+    winopt.footer = opts.footer
+    winopt.footer_pos = opts.footer_pos
+  end
   winopt = config.override(winopt) or winopt
   local winid = vim.api.nvim_open_win(bufnr, true, winopt)
   for option, value in pairs(config.win_options) do

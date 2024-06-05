@@ -341,6 +341,23 @@ require('dressing').setup({
 
 ## Notes for plugin authors
 
+### Window Footers
+With nvim 0.10, `input` and `select` (with the `builtin` backend) also support
+adding a footer via the `opts` of `vim.ui.input` and `vim.ui.select`:
+
+```lua
+vim.ui.input({
+	prompt = "Hello World",
+	footer = "foobar",
+}, function(text) print(text) end)
+```
+
+This is not part of the official API for `vim.ui.input` and `vim.ui.select`, but
+added for increased customizability. The `footer` and `footer_pos` values are
+simply passed to `vim.api.nvim_open_win()`. 
+
+### Telescope customization
+
 TL;DR: you can customize the telescope `vim.ui.select` implementation by passing `telescope` into `opts`.
 
 The `vim.ui` hooks are a great boon for us because we can now assume that users

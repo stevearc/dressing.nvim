@@ -264,10 +264,10 @@ end
 
 ---@param config table
 ---@param prompt_lines string[]
----@param default? string
+---@param opts table
 ---@return integer
 ---@return boolean
-local function create_or_update_win(config, prompt_lines, default)
+local function create_or_update_win(config, prompt_lines, opts)
   local parent_win = 0
   local winopt
   local win_conf
@@ -295,8 +295,8 @@ local function create_or_update_win(config, prompt_lines, default)
     util.calculate_width(config.relative, config.prefer_width, config, parent_win)
   -- Then expand the width to fit the prompt and default value
   prefer_width = math.max(prefer_width, 4 + get_max_strwidth(prompt_lines))
-  if default then
-    prefer_width = math.max(prefer_width, 2 + vim.api.nvim_strwidth(default))
+  if opts.default then
+    prefer_width = math.max(prefer_width, 2 + vim.api.nvim_strwidth(opts.default))
   end
   -- Then recalculate to clamp final value to min/max
   local width = util.calculate_width(config.relative, prefer_width, config, parent_win)
@@ -322,6 +322,10 @@ local function create_or_update_win(config, prompt_lines, default)
     winopt.title = trim_and_pad_title(prompt_lines[1], config.trim_prompt)
     -- We used to use "prompt_align" here
     winopt.title_pos = config.prompt_align or config.title_pos
+  end
+  if vim.fn.has("nvim-0.10") == 1 then
+    winopt.footer = opts.footer
+    winopt.footer_pos = opts.footer_pos
   end
 
   winopt = config.override(winopt) or winopt
@@ -416,7 +420,7 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   local prompt_lines = vim.split(prompt, "\n", { plain = true, trimempty = true })
 
   -- Create or update the window
-  local winid, start_in_insert = create_or_update_win(config, prompt_lines, opts.default)
+  local winid, start_in_insert = create_or_update_win(config, prompt_lines, opts)
   context = {
     winid = winid,
     on_confirm = on_confirm,
