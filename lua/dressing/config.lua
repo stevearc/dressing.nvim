@@ -166,13 +166,6 @@ local M = vim.deepcopy(default_config)
 M.update = function(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
-  if newconf.input.anchor or newconf.select.builtin.anchor then
-    vim.notify(
-      "Deprecated: dressing no longer accepts an 'anchor' option. Use the 'override' function to change the anchor",
-      vim.log.levels.WARN
-    )
-  end
-
   for k, v in pairs(newconf) do
     M[k] = v
   end
