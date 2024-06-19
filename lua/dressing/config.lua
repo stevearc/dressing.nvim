@@ -12,9 +12,6 @@ local default_config = {
     -- Can be 'left', 'right', or 'center'
     title_pos = "left",
 
-    -- When true, <Esc> will close the modal
-    insert_only = true,
-
     -- When true, input will start in insert mode.
     start_in_insert = true,
 

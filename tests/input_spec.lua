@@ -59,25 +59,6 @@ a.describe("input modal", function()
     assert(ret == nil, string.format("Got '%s' expected nil", ret))
   end)
 
-  a.it("cancels on <Esc> when insert_only = true", function()
-    require("dressing.config").input.insert_only = true
-    local ret = run_input({
-      "my text",
-      "<Esc>",
-    })
-    assert(ret == nil, string.format("Got '%s' expected nil", ret))
-  end)
-
-  a.it("does not cancel on <Esc> when insert_only = false", function()
-    require("dressing.config").input.insert_only = false
-    local ret = run_input({
-      "my text",
-      "<Esc>",
-      "<CR>",
-    })
-    assert(ret == "my text", string.format("Got '%s' expected 'my text'", ret))
-  end)
-
   a.it("returns cancelreturn when input is canceled <C-c>", function()
     local ret = run_input({
       "my text",

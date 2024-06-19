@@ -441,10 +441,6 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
     map_util.create_maps_to_plug(bufnr, mode, user_maps, "DressingInput:")
   end
 
-  if config.insert_only then
-    vim.keymap.set("i", "<Esc>", M.close, { buffer = bufnr })
-  end
-
   vim.bo[bufnr].filetype = "DressingInput"
   local default = string.gsub(opts.default or "", "\n", " ")
   vim.api.nvim_buf_set_lines(bufnr, 0, -1, true, { default })
