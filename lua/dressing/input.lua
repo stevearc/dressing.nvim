@@ -405,12 +405,6 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   if not config.enabled then
     return patch.original_mods.input(opts, on_confirm)
   end
-  if vim.fn.hlID("DressingInputText") ~= 0 then
-    vim.notify(
-      'DressingInputText highlight group is deprecated. Set winhighlight="NormalFloat:MyHighlightGroup" instead',
-      vim.log.levels.WARN
-    )
-  end
 
   local prompt = opts.prompt or config.default_prompt
   local prompt_lines = vim.split(prompt, "\n", { plain = true, trimempty = true })

@@ -39,12 +39,6 @@ local function close_window()
 end
 
 M.select = function(config, items, opts, on_choice)
-  if vim.fn.hlID("DressingSelectText") ~= 0 then
-    vim.notify(
-      'DressingSelectText highlight group is deprecated. Set winhighlight="NormalFloat:MyHighlightGroup" instead',
-      vim.log.levels.WARN
-    )
-  end
   _callback = on_choice
   _items = items
   local bufnr = vim.api.nvim_create_buf(false, true)
