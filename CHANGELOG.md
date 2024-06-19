@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.2.2](https://github.com/stevearc/dressing.nvim/compare/v2.2.1...v2.2.2) (2024-06-02)
+
+
+### Bug Fixes
+
+* stuck input control if callback fails ([#158](https://github.com/stevearc/dressing.nvim/issues/158)) ([3c38ac8](https://github.com/stevearc/dressing.nvim/commit/3c38ac861e1b8d4077ff46a779cde17330b29f3a))
+
 ## [2.2.1](https://github.com/stevearc/dressing.nvim/compare/v2.2.0...v2.2.1) (2024-05-16)
 
 
