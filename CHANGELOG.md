@@ -1,5 +1,16 @@
 # Changelog
 
+## [3.0.0](https://github.com/stevearc/dressing.nvim/compare/v2.2.2...v3.0.0) (2024-08-16)
+
+
+### ⚠ BREAKING CHANGES
+
+* remove insert_only config option
+
+### Code Refactoring
+
+* remove insert_only config option ([cd895f5](https://github.com/stevearc/dressing.nvim/commit/cd895f511fc8bd841324c73feb2b9c791b946691)), closes [#163](https://github.com/stevearc/dressing.nvim/issues/163)
+
 ## [2.2.2](https://github.com/stevearc/dressing.nvim/compare/v2.2.1...v2.2.2) (2024-06-02)
 
 
