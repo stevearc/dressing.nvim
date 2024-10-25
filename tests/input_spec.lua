@@ -81,7 +81,7 @@ a.describe("input modal", function()
     assert(ret == "", string.format("Got '%s' expected nil", ret))
   end)
 
-  a.it("starts in normal mode when start_in_insert = false", function()
+  a.it("starts in normal mode when start_mode = 'normal'", function()
     local orig_cmd = vim.cmd
     local startinsert_called = false
     vim.cmd = function(cmd)
@@ -91,7 +91,29 @@ a.describe("input modal", function()
       orig_cmd(cmd)
     end
 
-    require("dressing.config").input.start_in_insert = false
+    require("dressing.config").input.start_mode = "normal"
+    run_input({
+      "my text",
+      "<CR>",
+    }, {
+      after_fn = function()
+        vim.cmd = orig_cmd
+      end,
+    })
+    assert(not startinsert_called, "Got 'true' expected 'false'")
+  end)
+
+  a.it("is backwards compatible with start_in_insert = false", function()
+    local orig_cmd = vim.cmd
+    local startinsert_called = false
+    vim.cmd = function(cmd)
+      if cmd == "startinsert!" then
+        startinsert_called = true
+      end
+      orig_cmd(cmd)
+    end
+
+    require("dressing.config").input.start_mode = "normal"
     run_input({
       "my text",
       "<CR>",
