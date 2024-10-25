@@ -4,7 +4,7 @@ local patch = require("dressing.patch")
 local util = require("dressing.util")
 local M = {}
 
----@alias dressing.StartMode "insert" | "visual" | "normal"
+---@alias dressing.Mode "insert" | "visual" | "normal" | "select"
 
 ---@class (exact) dressing.InputContext
 ---@field opts? dressing.InputOptions
@@ -12,10 +12,11 @@ local M = {}
 ---@field winid? integer
 ---@field history_idx? integer
 ---@field history_tip? string
+---@field restore_mode? dressing.Mode The mode to restore when the input window closes.
 
 ---@class (exact) dressing.InputConfig
 ---@field start_in_insert? boolean
----@field start_mode? dressing.StartMode
+---@field start_mode? dressing.Mode
 ---@field enabled? boolean
 ---@field default_prompt? string
 ---@field win_options? table
@@ -38,6 +39,7 @@ local context = {
   winid = nil,
   history_idx = nil,
   history_tip = nil,
+  restore_mode = nil,
 }
 
 local keymaps = {
@@ -102,6 +104,19 @@ M.history_next = function()
   end
 end
 
+---@param mode dressing.Mode
+local function set_mode(mode)
+  if mode == "normal" then
+    vim.cmd("stopinsert")
+  elseif mode == "insert" then
+    vim.cmd("startinsert!")
+  elseif mode == "visual" then
+    vim.api.nvim_command("normal! vg_")
+  elseif mode == "select" then
+    -- TODO
+  end
+end
+
 local function close_completion_window()
   if vim.fn.pumvisible() == 1 then
     local escape_key = vim.api.nvim_replace_termcodes("<C-e>", true, false, true)
@@ -116,7 +131,7 @@ local function confirm(text)
   close_completion_window()
   local ctx = context
   context = {}
-  vim.cmd("stopinsert")
+  set_mode(ctx.restore_mode)
 
   -- We have to wait briefly for the popup window to close (if present),
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
@@ -276,6 +291,7 @@ end
 ---@param prompt_lines string[]
 ---@param default? string
 ---@return integer
+---@return dressing.Mode?
 local function create_or_update_win(config, prompt_lines, default)
   local parent_win = 0
   local winopt
@@ -335,16 +351,19 @@ local function create_or_update_win(config, prompt_lines, default)
 
   winopt = config.override(winopt) or winopt
 
-  local winid
+  local winid, restore_mode
   -- If the floating win was already open
   if win_conf then
     -- Make sure the previous on_confirm callback is called with nil
     vim.schedule(context.on_confirm)
     vim.api.nvim_win_set_config(context.winid, winopt)
     winid = context.winid
+    restore_mode = context.restore_mode
   else
     local bufnr = vim.api.nvim_create_buf(false, true)
     winid = vim.api.nvim_open_win(bufnr, true, winopt)
+    local mode_chr = string.sub(vim.api.nvim_get_mode().mode, 1, 1)
+    restore_mode = ({ i = "insert", n = "normal", v = "visual", s = "select" })[mode_chr]
   end
 
   -- If the prompt is multiple lines, create another window for it
@@ -394,7 +413,7 @@ local function create_or_update_win(config, prompt_lines, default)
   end
 
   ---@cast winid integer
-  return winid
+  return winid, restore_mode
 end
 
 ---@param opts string|dressing.InputOptions
@@ -423,12 +442,13 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   local prompt_lines = vim.split(prompt, "\n", { plain = true, trimempty = true })
 
   -- Create or update the window
-  local winid = create_or_update_win(config, prompt_lines, opts.default)
+  local winid, restore_mode = create_or_update_win(config, prompt_lines, opts.default)
   context = {
     winid = winid,
     on_confirm = on_confirm,
     opts = opts,
     history_idx = nil,
+    restore_mode = restore_mode,
   }
   for option, value in pairs(config.win_options) do
     vim.api.nvim_set_option_value(option, value, { scope = "local", win = winid })
@@ -496,11 +516,8 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
     callback = M.close,
   })
 
-  if start_mode == "insert" then
-    vim.cmd("startinsert!")
-  elseif start_mode == "visual" then
-     vim.api.nvim_command("normal! v$h")
-  end
+  ---@cast start_mode dressing.Mode
+  set_mode(start_mode)
 
   close_completion_window()
   apply_highlight()
