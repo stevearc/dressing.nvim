@@ -141,7 +141,7 @@ require("dressing").setup({
     -- Can be 'left', 'right', or 'center'
     title_pos = "left",
 
-    -- The initial mode when the window opens.
+    -- The initial mode when the window opens (insert|normal|visual|select).
     start_mode = "insert",
 
     -- These are passed to nvim_open_win
