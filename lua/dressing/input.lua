@@ -12,7 +12,7 @@ local M = {}
 ---@field winid? integer
 ---@field history_idx? integer
 ---@field history_tip? string
----@field restore_mode? dressing.Mode The mode to restore when the input window closes.
+---@field mode_to_restore? dressing.Mode The mode to restore when the input window closes.
 
 ---@class (exact) dressing.InputConfig
 ---@field start_in_insert? boolean
@@ -39,7 +39,7 @@ local context = {
   winid = nil,
   history_idx = nil,
   history_tip = nil,
-  restore_mode = nil,
+  mode_to_restore = nil,
 }
 
 local keymaps = {
@@ -104,7 +104,7 @@ M.history_next = function()
   end
 end
 
----@param mode dressing.Mode
+---@param mode dressing.Mode?
 local function set_mode(mode)
   if mode == "normal" then
     vim.cmd("stopinsert")
@@ -114,6 +114,19 @@ local function set_mode(mode)
     vim.api.nvim_command("normal! vg_")
   elseif mode == "select" then
     -- TODO
+  end
+end
+
+---@param mode dressing.Mode?
+local function restore_mode(mode)
+  if mode == "normal" then
+    vim.cmd("stopinsert")
+  elseif mode == "insert" then
+     -- Nothing to do
+  elseif mode == "visual" then
+     -- Not supported
+  elseif mode == "select" then
+     -- Not supported
   end
 end
 
@@ -131,7 +144,7 @@ local function confirm(text)
   close_completion_window()
   local ctx = context
   context = {}
-  set_mode(ctx.restore_mode)
+  restore_mode(ctx.mode_to_restore)
 
   -- We have to wait briefly for the popup window to close (if present),
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
@@ -351,19 +364,19 @@ local function create_or_update_win(config, prompt_lines, default)
 
   winopt = config.override(winopt) or winopt
 
-  local winid, restore_mode
+  local winid, mode_to_restore
   -- If the floating win was already open
   if win_conf then
     -- Make sure the previous on_confirm callback is called with nil
     vim.schedule(context.on_confirm)
     vim.api.nvim_win_set_config(context.winid, winopt)
     winid = context.winid
-    restore_mode = context.restore_mode
+    mode_to_restore = context.mode_to_restore
   else
     local bufnr = vim.api.nvim_create_buf(false, true)
     winid = vim.api.nvim_open_win(bufnr, true, winopt)
     local mode_chr = string.sub(vim.api.nvim_get_mode().mode, 1, 1)
-    restore_mode = ({ i = "insert", n = "normal", v = "visual", s = "select" })[mode_chr]
+    mode_to_restore = ({ i = "insert", n = "normal", v = "visual", s = "select" })[mode_chr]
   end
 
   -- If the prompt is multiple lines, create another window for it
@@ -413,7 +426,7 @@ local function create_or_update_win(config, prompt_lines, default)
   end
 
   ---@cast winid integer
-  return winid, restore_mode
+  return winid, mode_to_restore
 end
 
 ---@param opts string|dressing.InputOptions
@@ -437,13 +450,13 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   local prompt_lines = vim.split(prompt, "\n", { plain = true, trimempty = true })
 
   -- Create or update the window
-  local winid, restore_mode = create_or_update_win(config, prompt_lines, opts.default)
+  local winid, mode_to_restore = create_or_update_win(config, prompt_lines, opts.default)
   context = {
     winid = winid,
     on_confirm = on_confirm,
     opts = opts,
     history_idx = nil,
-    restore_mode = restore_mode,
+    mode_to_restore = mode_to_restore,
   }
   for option, value in pairs(config.win_options) do
     vim.api.nvim_set_option_value(option, value, { scope = "local", win = winid })
