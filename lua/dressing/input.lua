@@ -433,11 +433,6 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
 
   local start_mode = config.start_mode
 
-  -- Support start_in_insert for backwards compatibility.
-  if config.start_in_insert ~= nil then
-     start_mode = config.start_in_insert and "insert" or "normal"
-  end
-
   local prompt = opts.prompt or config.default_prompt
   local prompt_lines = vim.split(prompt, "\n", { plain = true, trimempty = true })
 
