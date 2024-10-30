@@ -113,7 +113,8 @@ local function set_mode(mode)
   elseif mode == "visual" then
     vim.api.nvim_command("normal! vg_")
   elseif mode == "select" then
-    -- TODO
+    set_mode("visual")
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-g>", true, false, true), "n", true)
   end
 end
 
