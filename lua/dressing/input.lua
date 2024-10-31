@@ -122,13 +122,11 @@ end
 local function restore_mode(mode)
   if mode == "normal" then
     vim.cmd("stopinsert")
-  elseif mode == "insert" then
-     -- Nothing to do
-  elseif mode == "visual" then
-     -- Not supported
-  elseif mode == "select" then
-     -- Not supported
   end
+
+  -- insert: Nothing to do
+  -- visual: Not supported
+  -- select: Not supported
 end
 
 local function close_completion_window()
@@ -440,7 +438,7 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   if type(opts) ~= "table" then
     opts = { prompt = tostring(opts) }
   end
-  local config = global_config.get_mod_config("input", opts)  --[[@as dressing.InputConfig]]
+  local config = global_config.get_mod_config("input", opts) --[[@as dressing.InputConfig]]
   if not config.enabled then
     return patch.original_mods.input(opts, on_confirm)
   end
