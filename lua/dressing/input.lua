@@ -105,7 +105,7 @@ M.history_next = function()
 end
 
 ---@param mode dressing.Mode?
-local function set_mode(mode)
+M.set_mode = function(mode)
   if mode == "normal" then
     vim.cmd("stopinsert")
   elseif mode == "insert" then
@@ -113,13 +113,13 @@ local function set_mode(mode)
   elseif mode == "visual" then
     vim.api.nvim_command("normal! vg_")
   elseif mode == "select" then
-    set_mode("visual")
+    M.set_mode("visual")
     vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-g>", true, false, true), "n", true)
   end
 end
 
 ---@param mode dressing.Mode?
-local function restore_mode(mode)
+M.restore_mode = function(mode)
   if mode == "normal" then
     vim.cmd("stopinsert")
   end
@@ -143,7 +143,7 @@ local function confirm(text)
   close_completion_window()
   local ctx = context
   context = {}
-  restore_mode(ctx.mode_to_restore)
+  M.restore_mode(ctx.mode_to_restore)
 
   -- We have to wait briefly for the popup window to close (if present),
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
@@ -524,7 +524,7 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   })
 
   ---@cast start_mode dressing.Mode
-  set_mode(start_mode)
+  M.set_mode(start_mode)
 
   close_completion_window()
   apply_highlight()
