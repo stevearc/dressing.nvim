@@ -445,7 +445,7 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
 
   local start_mode = config.start_mode
 
-  local prompt = opts.prompt or config.default_prompt
+  local prompt = opts.prompt or config.default_prompt --[[@as string]]
   local prompt_lines = vim.split(prompt, "\n", { plain = true, trimempty = true })
 
   -- Create or update the window
