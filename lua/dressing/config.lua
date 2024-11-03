@@ -12,8 +12,8 @@ local default_config = {
     -- Can be 'left', 'right', or 'center'
     title_pos = "left",
 
-    -- When true, input will start in insert mode.
-    start_in_insert = true,
+    -- The initial mode when the window opens (insert|normal|visual|select).
+    start_mode = "insert",
 
     -- These are passed to nvim_open_win
     border = "rounded",
@@ -163,11 +163,24 @@ local default_config = {
 
 local M = vim.deepcopy(default_config)
 
+-- Apply shims for backwards compatibility
+---@param key string
+---@param opts table
+---@return table
+M.apply_shim = function(key, opts)
+  -- Support start_in_insert for backwards compatibility.
+  if key == "input" and opts.start_in_insert ~= nil then
+    opts.start_mode = opts.start_in_insert and "insert" or "normal"
+  end
+
+  return opts
+end
+
 M.update = function(opts)
   local newconf = vim.tbl_deep_extend("force", default_config, opts or {})
 
   for k, v in pairs(newconf) do
-    M[k] = v
+    M[k] = M.apply_shim(k, v)
   end
 end
 
@@ -177,7 +190,10 @@ M.get_mod_config = function(key, ...)
   if not M[key].get_config then
     return M[key]
   end
+
   local conf = M[key].get_config(...)
+  conf = M.apply_shim(key, conf)
+
   if conf then
     return vim.tbl_deep_extend("force", M[key], conf)
   else

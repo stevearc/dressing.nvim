@@ -1,7 +1,11 @@
 require("plenary.async").tests.add_to_env()
+local a = require("plenary.async")
 local dressing = require("dressing")
+local input = require("dressing.input")
 local util = require("tests.util")
 local channel = a.control.channel
+local assert = require("luassert")
+local stub = require("luassert.stub")
 
 local function run_input(keys, opts)
   opts = opts or {}
@@ -81,28 +85,6 @@ a.describe("input modal", function()
     assert(ret == "", string.format("Got '%s' expected nil", ret))
   end)
 
-  a.it("starts in normal mode when start_in_insert = false", function()
-    local orig_cmd = vim.cmd
-    local startinsert_called = false
-    vim.cmd = function(cmd)
-      if cmd == "startinsert!" then
-        startinsert_called = true
-      end
-      orig_cmd(cmd)
-    end
-
-    require("dressing.config").input.start_in_insert = false
-    run_input({
-      "my text",
-      "<CR>",
-    }, {
-      after_fn = function()
-        vim.cmd = orig_cmd
-      end,
-    })
-    assert(not startinsert_called, "Got 'true' expected 'false'")
-  end)
-
   a.it("queues successive calls to vim.ui.input", function()
     local tx1, rx1 = channel.oneshot()
     local tx2, rx2 = channel.oneshot()
@@ -137,6 +119,84 @@ a.describe("input modal", function()
     })
     assert(ret == "second", string.format("Got '%s' expected 'second'", ret))
     assert(vim.fn.pumvisible() == 0, "Popup menu should not be visible after leaving modal")
+  end)
+
+  local function test_start_mode(expected_start_mode, expected_restore_mode)
+    -- Since going into insert mode does not work well in headless, use mocks.
+    local nvim_get_mode = stub(vim.api, "nvim_get_mode", { mode = expected_restore_mode })
+    local set_mode = stub(input, "set_mode")
+    local restore_mode = stub(input, "restore_mode")
+
+    local tx, rx = channel.oneshot()
+    vim.ui.input({}, tx)
+
+    assert.stub(set_mode).was_called(1)
+    assert.spy(set_mode).was_called_with(expected_start_mode)
+    set_mode:clear()
+    assert.stub(restore_mode).was_not_called()
+
+    util.feedkeys({ "<CR>" })
+
+    assert.spy(set_mode).was_not_called()
+    assert.stub(restore_mode).was_called(1)
+    assert.stub(restore_mode).was_called_with(expected_restore_mode)
+
+    rx()
+
+    set_mode:revert()
+    restore_mode:revert()
+    nvim_get_mode:revert()
+  end
+
+  -- Visual causes problems. The other's should be enough. The logic is the same.
+  for _, start_mode in ipairs({ "normal", "insert", "select" }) do
+    -- Only normal and insert are supported.
+    for _, mode_to_restore in ipairs({ "normal", "insert" }) do
+      a.it(
+        "sets the mode correctly to start_mode="
+          .. start_mode
+          .. " restore_mode="
+          .. mode_to_restore,
+        function()
+          require("dressing.config").input.start_mode = start_mode
+          test_start_mode(start_mode, mode_to_restore)
+        end
+      )
+    end
+  end
+
+  a.it("is backwards compatible with start_in_insert = false", function()
+    require("dressing.config").update({ input = { start_in_insert = false } })
+    test_start_mode("normal", "normal")
+  end)
+
+  a.it("is backwards compatible with start_in_insert = true", function()
+    require("dressing.config").update({ input = { start_in_insert = true } })
+    test_start_mode("insert", "normal")
+  end)
+
+  a.it("get_config takes precedence (normal)", function()
+    require("dressing.config").update({
+      input = {
+        start_mode = "insert",
+        get_config = function()
+          return { start_in_insert = false }
+        end,
+      },
+    })
+    test_start_mode("normal", "normal")
+  end)
+
+  a.it("get_config takes precedence (insert)", function()
+    require("dressing.config").update({
+      input = {
+        start_mode = "normal",
+        get_config = function()
+          return { start_in_insert = true }
+        end,
+      },
+    })
+    test_start_mode("insert", "normal")
   end)
 
   a.it("can cancel out when popup menu is open", function()

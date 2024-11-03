@@ -4,13 +4,26 @@ local patch = require("dressing.patch")
 local util = require("dressing.util")
 local M = {}
 
+---@alias dressing.Mode "insert" | "visual" | "normal" | "select"
+
 ---@class (exact) dressing.InputContext
 ---@field opts? dressing.InputOptions
 ---@field on_confirm? fun(text?: string)
 ---@field winid? integer
 ---@field history_idx? integer
 ---@field history_tip? string
+---@field mode_to_restore? dressing.Mode The mode to restore when the input window closes.
+
+---@class (exact) dressing.InputConfig
 ---@field start_in_insert? boolean
+---@field start_mode? dressing.Mode
+---@field enabled? boolean
+---@field default_prompt? string
+---@field win_options? table
+---@field buf_options? table
+---@field mappings? table
+---@field trim_prompt? boolean
+---@field prompt_align? string
 
 ---@class (exact) dressing.InputOptions
 ---@field prompt? string
@@ -26,7 +39,7 @@ local context = {
   winid = nil,
   history_idx = nil,
   history_tip = nil,
-  start_in_insert = nil,
+  mode_to_restore = nil,
 }
 
 local keymaps = {
@@ -91,6 +104,27 @@ M.history_next = function()
   end
 end
 
+---@param mode dressing.Mode?
+M.set_mode = function(mode)
+  if mode == "normal" then
+    vim.cmd("stopinsert")
+  elseif mode == "insert" then
+    vim.cmd("startinsert!")
+  elseif mode == "visual" then
+    vim.api.nvim_command("normal! vg_")
+  elseif mode == "select" then
+    M.set_mode("visual")
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-g>", true, false, true), "n", true)
+  end
+end
+
+---@param mode dressing.Mode?
+M.restore_mode = function(mode)
+  if mode ~= "insert" then
+    vim.cmd("stopinsert")
+  end
+end
+
 local function close_completion_window()
   if vim.fn.pumvisible() == 1 then
     local escape_key = vim.api.nvim_replace_termcodes("<C-e>", true, false, true)
@@ -105,9 +139,8 @@ local function confirm(text)
   close_completion_window()
   local ctx = context
   context = {}
-  if not ctx.start_in_insert then
-    vim.cmd("stopinsert")
-  end
+  M.restore_mode(ctx.mode_to_restore)
+
   -- We have to wait briefly for the popup window to close (if present),
   -- otherwise vim gets into a very weird and bad state. I was seeing text get
   -- deleted from the buffer after the input window closes.
@@ -266,7 +299,7 @@ end
 ---@param prompt_lines string[]
 ---@param default? string
 ---@return integer
----@return boolean
+---@return dressing.Mode?
 local function create_or_update_win(config, prompt_lines, default)
   local parent_win = 0
   local winopt
@@ -326,18 +359,19 @@ local function create_or_update_win(config, prompt_lines, default)
 
   winopt = config.override(winopt) or winopt
 
-  local winid, start_in_insert
+  local winid, mode_to_restore
   -- If the floating win was already open
   if win_conf then
     -- Make sure the previous on_confirm callback is called with nil
     vim.schedule(context.on_confirm)
     vim.api.nvim_win_set_config(context.winid, winopt)
     winid = context.winid
-    start_in_insert = context.start_in_insert
+    mode_to_restore = context.mode_to_restore
   else
-    start_in_insert = string.sub(vim.api.nvim_get_mode().mode, 1, 1) == "i"
     local bufnr = vim.api.nvim_create_buf(false, true)
     winid = vim.api.nvim_open_win(bufnr, true, winopt)
+    local mode_chr = string.sub(vim.api.nvim_get_mode().mode, 1, 1)
+    mode_to_restore = ({ i = "insert", n = "normal", v = "visual", s = "select" })[mode_chr]
   end
 
   -- If the prompt is multiple lines, create another window for it
@@ -387,8 +421,7 @@ local function create_or_update_win(config, prompt_lines, default)
   end
 
   ---@cast winid integer
-  ---@cast start_in_insert boolean
-  return winid, start_in_insert
+  return winid, mode_to_restore
 end
 
 ---@param opts string|dressing.InputOptions
@@ -401,22 +434,24 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
   if type(opts) ~= "table" then
     opts = { prompt = tostring(opts) }
   end
-  local config = global_config.get_mod_config("input", opts)
+  local config = global_config.get_mod_config("input", opts) --[[@as dressing.InputConfig]]
   if not config.enabled then
     return patch.original_mods.input(opts, on_confirm)
   end
 
-  local prompt = opts.prompt or config.default_prompt
+  local start_mode = config.start_mode
+
+  local prompt = opts.prompt or config.default_prompt --[[@as string]]
   local prompt_lines = vim.split(prompt, "\n", { plain = true, trimempty = true })
 
   -- Create or update the window
-  local winid, start_in_insert = create_or_update_win(config, prompt_lines, opts.default)
+  local winid, mode_to_restore = create_or_update_win(config, prompt_lines, opts.default)
   context = {
     winid = winid,
     on_confirm = on_confirm,
     opts = opts,
     history_idx = nil,
-    start_in_insert = start_in_insert,
+    mode_to_restore = mode_to_restore,
   }
   for option, value in pairs(config.win_options) do
     vim.api.nvim_set_option_value(option, value, { scope = "local", win = winid })
@@ -484,9 +519,9 @@ local show_input = util.make_queued_async_fn(2, function(opts, on_confirm)
     callback = M.close,
   })
 
-  if config.start_in_insert then
-    vim.cmd("startinsert!")
-  end
+  ---@cast start_mode dressing.Mode
+  M.set_mode(start_mode)
+
   close_completion_window()
   apply_highlight()
 end)
