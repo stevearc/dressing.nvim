@@ -120,13 +120,9 @@ end
 
 ---@param mode dressing.Mode?
 M.restore_mode = function(mode)
-  if mode == "normal" then
+  if mode ~= "insert" then
     vim.cmd("stopinsert")
   end
-
-  -- insert: Nothing to do
-  -- visual: Not supported
-  -- select: Not supported
 end
 
 local function close_completion_window()
