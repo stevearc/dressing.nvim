@@ -1,11 +1,11 @@
 require("plenary.async").tests.add_to_env()
+local a = require("plenary.async")
 local dressing = require("dressing")
 local input = require("dressing.input")
 local util = require("tests.util")
-local a = require('plenary.async')
 local channel = a.control.channel
 local assert = require("luassert")
-local stub = require('luassert.stub')
+local stub = require("luassert.stub")
 
 local function run_input(keys, opts)
   opts = opts or {}
@@ -135,7 +135,7 @@ a.describe("input modal", function()
     set_mode:clear()
     assert.stub(restore_mode).was_not_called()
 
-    util.feedkeys({"<CR>"})
+    util.feedkeys({ "<CR>" })
 
     assert.spy(set_mode).was_not_called()
     assert.stub(restore_mode).was_called(1)
@@ -152,10 +152,16 @@ a.describe("input modal", function()
   for _, start_mode in ipairs({ "normal", "insert", "select" }) do
     -- Only normal and insert are supported.
     for _, mode_to_restore in ipairs({ "normal", "insert" }) do
-      a.it("sets the mode correctly to start_mode=" .. start_mode .. " restore_mode=" .. mode_to_restore, function()
-        require("dressing.config").input.start_mode = start_mode
-        test_start_mode(start_mode, mode_to_restore)
-      end)
+      a.it(
+        "sets the mode correctly to start_mode="
+          .. start_mode
+          .. " restore_mode="
+          .. mode_to_restore,
+        function()
+          require("dressing.config").input.start_mode = start_mode
+          test_start_mode(start_mode, mode_to_restore)
+        end
+      )
     end
   end
 
@@ -173,7 +179,9 @@ a.describe("input modal", function()
     require("dressing.config").update({
       input = {
         start_mode = "insert",
-        get_config = function() return { start_in_insert = false } end,
+        get_config = function()
+          return { start_in_insert = false }
+        end,
       },
     })
     test_start_mode("normal", "normal")
@@ -183,7 +191,9 @@ a.describe("input modal", function()
     require("dressing.config").update({
       input = {
         start_mode = "normal",
-        get_config = function() return { start_in_insert = true } end,
+        get_config = function()
+          return { start_in_insert = true }
+        end,
       },
     })
     test_start_mode("insert", "normal")
