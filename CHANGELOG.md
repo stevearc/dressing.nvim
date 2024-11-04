@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.1.0](https://github.com/stevearc/dressing.nvim/compare/v3.0.0...v3.1.0) (2024-11-04)
+
+
+### Features
+
+* **input:** support for start_mode ([#175](https://github.com/stevearc/dressing.nvim/issues/175)) ([c334ac7](https://github.com/stevearc/dressing.nvim/commit/c334ac73e031f0dc93d6d91f3658ee75b8be1d3b))
+
+
+### Bug Fixes
+
+* add nil check in backwards compatibility shim ([#177](https://github.com/stevearc/dressing.nvim/issues/177)) ([6ef1ca4](https://github.com/stevearc/dressing.nvim/commit/6ef1ca479d37d4ff66f13eed44d08912caff483a))
+
 ## [3.0.0](https://github.com/stevearc/dressing.nvim/compare/v2.2.2...v3.0.0) (2024-08-16)
 
 
