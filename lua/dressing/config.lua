@@ -165,11 +165,11 @@ local M = vim.deepcopy(default_config)
 
 -- Apply shims for backwards compatibility
 ---@param key string
----@param opts table
----@return table
+---@param opts? table
+---@return table?
 M.apply_shim = function(key, opts)
   -- Support start_in_insert for backwards compatibility.
-  if key == "input" and opts.start_in_insert ~= nil then
+  if key == "input" and opts ~= nil and opts.start_in_insert ~= nil then
     opts.start_mode = opts.start_in_insert and "insert" or "normal"
   end
 
