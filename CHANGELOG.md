@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.1](https://github.com/stevearc/dressing.nvim/compare/v3.1.0...v3.1.1) (2024-11-13)
+
+
+### Bug Fixes
+
+* **select-builtin:** disable matchparen highlighting ([#180](https://github.com/stevearc/dressing.nvim/issues/180)) ([857cb36](https://github.com/stevearc/dressing.nvim/commit/857cb361bb7abc07e8831e306bac1ca0c7277187))
+
 ## [3.1.0](https://github.com/stevearc/dressing.nvim/compare/v3.0.0...v3.1.0) (2024-11-04)
 
 
