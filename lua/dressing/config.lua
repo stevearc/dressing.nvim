@@ -127,6 +127,8 @@ local default_config = {
       win_options = {
         cursorline = true,
         cursorlineopt = "both",
+        -- disable highlighting for the brackets around the numbers
+        winhighlight = "MatchParen:",
       },
 
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
