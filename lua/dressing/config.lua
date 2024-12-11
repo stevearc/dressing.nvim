@@ -129,6 +129,8 @@ local default_config = {
         cursorlineopt = "both",
         -- disable highlighting for the brackets around the numbers
         winhighlight = "MatchParen:",
+        -- adds padding at the left border
+        statuscolumn = " ",
       },
 
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
