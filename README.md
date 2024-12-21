@@ -196,7 +196,7 @@ require("dressing").setup({
     enabled = true,
 
     -- Priority list of preferred vim.select implementations
-    backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+    backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui", "snipe" },
 
     -- Trim trailing `:` from prompt
     trim_prompt = true,
@@ -241,6 +241,19 @@ require("dressing").setup({
       max_height = 40,
       min_width = 40,
       min_height = 10,
+    },
+
+    -- Options for snipe selector
+    snipe = {
+      -- Default options come from your snipe.nvim configuration,
+      -- but you can override them here.
+      -- See available options for snipe.menu in the snipe.nvim repository
+      options = {},
+
+      --- Callback function that runs when a new snipe buffer is created
+      --- Useful to override the default keymaps logic
+      --- @type fun(menu: table, on_choice: fun(item: any, idx: number|nil))
+      add_new_buffer_callback = nil,
     },
 
     -- Options for built-in selector
