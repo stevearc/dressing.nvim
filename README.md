@@ -271,6 +271,8 @@ require("dressing").setup({
         cursorlineopt = "both",
         -- disable highlighting for the brackets around the numbers
         winhighlight = "MatchParen:",
+        -- adds padding at the left border
+        statuscolumn = " ",
       },
 
       -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
@@ -382,6 +384,8 @@ For now this is available only for the telescope backend, but feel free to reque
 
 ## Alternative and related projects
 
+- [snacks.nvim](https://github.com/folke/snacks.nvim/blob/main/docs/input.md) - has a `vim.ui.input` implementation
+- [mini.nvim](https://github.com/echasnovski/mini.nvim/blob/main/readmes/mini-pick.md) - has a `vim.ui.select` implementation
 - [telescope-ui-select](https://github.com/nvim-telescope/telescope-ui-select.nvim) - provides a `vim.ui.select` implementation for telescope
 - [fzf-lua](https://github.com/ibhagwan/fzf-lua/blob/061a4df40f5238782fdd7b380fe55650fadd9384/README.md?plain=1#L259-L264) - provides a `vim.ui.select` implementation for fzf
 - [nvim-fzy](https://github.com/mfussenegger/nvim-fzy) - fzf alternative that also provides a `vim.ui.select` implementation ([#13](https://github.com/mfussenegger/nvim-fzy/pull/13))
