@@ -42,6 +42,10 @@ Neovim 0.8.0+ (for earlier versions, use the [nvim-0.7](https://github.com/steve
 
 ![Screenshot from 2021-12-02 19-47-56](https://user-images.githubusercontent.com/506791/144542071-1aa66f81-b07c-492e-9884-fdafed1006df.png)
 
+`vim.select` (snacks_picker)
+
+![Screenshot from 2025-01-29 03-08-00](https://github.com/user-attachments/assets/8e2ab738-f7eb-44e9-b161-dcab2251120b)
+
 `vim.select` (built-in)
 
 ![Screenshot from 2021-12-04 17-14-32](https://user-images.githubusercontent.com/506791/144729527-ede0d7ba-a6e6-41e0-be5a-1a5f16d35b05.png)
@@ -196,7 +200,7 @@ require("dressing").setup({
     enabled = true,
 
     -- Priority list of preferred vim.select implementations
-    backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+    backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui", "snacks_picker" },
 
     -- Trim trailing `:` from prompt
     trim_prompt = true,
