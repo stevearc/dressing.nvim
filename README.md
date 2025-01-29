@@ -44,7 +44,7 @@ Neovim 0.8.0+ (for earlier versions, use the [nvim-0.7](https://github.com/steve
 
 `vim.select` (snacks_picker)
 
-![Screenshot from 2025-01-29 03-08-00](https://github.com/user-attachments/assets/8e2ab738-f7eb-44e9-b161-dcab2251120b)
+![Screenshot from 2025-01-29 03-08-00](https://github.com/user-attachments/assets/4bc72539-9c81-4428-8778-f7904a16898c)
 
 `vim.select` (built-in)
 
