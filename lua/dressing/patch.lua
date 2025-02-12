@@ -1,4 +1,4 @@
-local all_modules = { "input", "select" }
+local all_modules = { "confirm", "input", "select" }
 
 local M = {}
 

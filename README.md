@@ -1,10 +1,6 @@
 # Dressing.nvim
 
-With the release of Neovim 0.6 we were given the start of extensible core UI
-hooks ([vim.ui.select](https://github.com/neovim/neovim/pull/15771) and
-[vim.ui.input](https://github.com/neovim/neovim/pull/15959)). They exist to
-allow plugin authors to override them with improvements upon the default
-behavior, so that's exactly what we're going to do.
+Neovim has several utility functions under the `vim.ui.*` namespace for accepting input from the user. Dressing replaces the default functions with prettier implementations that use floating windows.
 
 It is a goal to match and not extend the core Neovim API. All options that core
 respects will be respected, and we will not accept any custom parameters or
@@ -26,9 +22,13 @@ Neovim 0.8.0+ (for earlier versions, use the [nvim-0.7](https://github.com/steve
 
 ## Screenshots
 
-`vim.input` replacement (handling a LSP rename)
+`vim.input` (handling a LSP rename)
 
 ![Screenshot from 2021-12-09 17-36-16](https://user-images.githubusercontent.com/506791/145502533-3dc2f87d-95ea-422d-a318-12c0092f1bdf.png)
+
+`vim.confirm`
+
+![Screenshot 2023-04-12 at 9 27 53 AM](https://user-images.githubusercontent.com/506791/231521989-3a4049ae-f56e-4864-b0df-4dc9702f14b1.png)
 
 `vim.select` (telescope)
 
@@ -292,6 +292,45 @@ require("dressing").setup({
 
     -- Used to override format_item. See :help dressing-format
     format_item_override = {},
+
+    -- see :help dressing_get_config
+    get_config = nil,
+  },
+  confirm = {
+    -- Set to false to disable the vim.ui.confirm implementation
+    enabled = true,
+
+    -- Title of the confirm window
+    title = "Confirm",
+
+    -- Can be 'left', 'right', or 'center'
+    title_pos = "center",
+
+    border = "rounded",
+
+    -- These can be integers or a float between 0 and 1 (e.g. 0.4 for 40%)
+    width = nil,
+    -- min_width and max_width can be a list of mixed types.
+    -- min_width = {20, 0.2} means "the greater of 20 columns or 20% of total"
+    max_width = { 140, 0.9 },
+    min_width = { 20, 0.2 },
+    height = nil,
+    max_height = 0.9,
+    min_height = { 4, 0.2 },
+
+    buf_options = {},
+    win_options = {
+      -- Window transparency (0-100)
+      winblend = 10,
+      -- Disable line wrapping
+      wrap = false,
+    },
+
+    override = function(conf)
+      -- This is the config that will be passed to nvim_open_win.
+      -- Change values here to customize the layout
+      return conf
+    end,
 
     -- see :help dressing_get_config
     get_config = nil,
