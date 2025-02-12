@@ -53,6 +53,7 @@ jobs:
           - v0.8.3
           - v0.9.4
           - v0.10.0
+          - v0.10.4
 
     name: Run tests
     runs-on: ubuntu-22.04
