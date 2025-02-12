@@ -200,7 +200,7 @@ require("dressing").setup({
     enabled = true,
 
     -- Priority list of preferred vim.select implementations
-    backend = { "snacks_picker", "telescope", "fzf_lua", "fzf", "builtin", "nui" },
+    backend = { "telescope", "fzf_lua", "fzf", "builtin", "nui" },
 
     -- Trim trailing `:` from prompt
     trim_prompt = true,
