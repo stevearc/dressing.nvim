@@ -1,5 +1,8 @@
 # Dressing.nvim
 
+> [!WARNING]
+> This plugin is archived! It still works, but I recommend that you use [snacks.nvim](https://github.com/folke/snacks.nvim) instead for your `vim.ui.*` interfaces. To read more about why this decision was made, see https://github.com/stevearc/dressing.nvim/issues/190
+
 With the release of Neovim 0.6 we were given the start of extensible core UI
 hooks ([vim.ui.select](https://github.com/neovim/neovim/pull/15771) and
 [vim.ui.input](https://github.com/neovim/neovim/pull/15959)). They exist to
