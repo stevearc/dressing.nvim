@@ -1,5 +1,17 @@
 # Changelog
 
+## [3.2.0](https://github.com/stevearc/dressing.nvim/compare/v3.1.1...v3.2.0) (2025-02-12)
+
+
+### Features
+
+* **select:** add snacks_picker backend ([#188](https://github.com/stevearc/dressing.nvim/issues/188)) ([2e970fb](https://github.com/stevearc/dressing.nvim/commit/2e970fb578ceeed50061ada1b70d0129a3b66ba1))
+
+
+### Bug Fixes
+
+* temporarily remove snacks_picker from default select backends ([a1cded1](https://github.com/stevearc/dressing.nvim/commit/a1cded14eea6c9420989b0fbb7c9b27cd41086a6))
+
 ## [3.1.1](https://github.com/stevearc/dressing.nvim/compare/v3.1.0...v3.1.1) (2024-12-21)
 
 
